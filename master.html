@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Мастер рун - Автобаттл MMO</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<div class="wrapper">
+    <div id="adminPanel" style="display:none;"><div class="admin-panel"><div class="admin-info"><div class="admin-avatar">👑</div><div><div class="admin-name" id="adminName"></div><div class="admin-role">Администратор</div></div><div class="admin-badge">ADMIN</div></div><div class="admin-actions"><button class="admin-btn" onclick="openAdminPanel()">⚙️ Управление</button><button class="admin-btn logout-btn" onclick="logout()">🚪 Выйти</button></div></div></div>
+    <div id="userPanel" style="display:none;"><div class="admin-panel"><div class="admin-info"><div class="admin-avatar">👤</div><div><div class="admin-name" id="userName"></div><div class="admin-role">Пользователь</div></div></div><div class="admin-actions"><button class="admin-btn logout-btn" onclick="logout()">🚪 Выйти</button></div></div></div>
+    <div class="header-wrapper"><a href="https://mobitva.net" target="_blank">mobitva.net</a><div class="site-title">🏰 МАСТЕР РУН 🏰</div><a href="https://mmobitva.ru" target="_blank">mmobitva.ru</a></div>
+    <div class="categories"><button class="cat-btn" onclick="location.href='main.html'">🏠 Главная</button><button class="cat-btn" onclick="location.reload()">🔄 Обновить</button></div>
+    <div class="runes-grid" id="runes-container"></div>
+</div>
+<div id="runeModal" class="rune-modal" style="display:none!important"><div class="rune-modal-content"><div class="rune-modal-header"><div class="rune-modal-close" onclick="closeRuneModal()">✕</div><div class="rune-modal-icon"><div class="item-icon" id="modalIcon"></div></div><div class="rune-modal-title" id="modalTitle"></div><div class="rune-modal-subtitle" id="modalSubtitle"></div></div><div class="rune-modal-body"><div class="rune-modal-stats"><div class="rune-modal-stats-title">📊 ХАРАКТЕРИСТИКИ</div><div id="modalStats"></div></div><div class="rune-modal-description" id="modalDescription"></div></div><div class="rune-modal-footer"><button class="rune-modal-btn" onclick="closeRuneModal()">Закрыть</button></div></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/db.js"></script>
+<script src="js/common.js"></script>
+<script>
+if(!checkAuth()) { window.location.href = 'auth.html'; }
+async function renderMaster() {
+    const runes = await getMasterRunes();
+    const container = document.getElementById('runes-container');
+    if(!container) return;
+    let html = '';
+    for(const r of runes) {
+        const statsHtml = Object.entries(r.stats).map(([n,v]) => `<div class="rune-stat-line"><div class="rune-stat-name"><span class="rune-stat-icon ${getStatIconClass(n)}"></span><span>${n}:</span></div><div class="rune-stat-value">${v}</div></div>`).join('');
+        html += `<div class="rune-card" onclick="openRuneModal(${r.id})">
+                    <div class="rune-header">
+                        <div class="rune-icon shop-icon" style="--row:${r.icon_row}; --col:${r.icon_col};"></div>
+                        <div class="rune-title"><div class="rune-name">${escapeHtml(r.name)}</div><div class="rune-level">📊 Уровень ${r.level}</div></div>
+                    </div>
+                    <div class="rune-stats">${statsHtml}</div>
+                    <div class="rune-description">${escapeHtml(r.description)}</div>
+                </div>`;
+    }
+    container.innerHTML = html;
+}
+function openRuneModal(id) { document.getElementById('runeModal').style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+function closeRuneModal() { document.getElementById('runeModal').style.display = 'none'; document.body.style.overflow = ''; }
+renderMaster(); document.addEventListener('DOMContentLoaded', displayAdminPanel);
+</script>
+</body>
+</html>

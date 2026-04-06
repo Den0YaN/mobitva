@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>База предметов - Автобаттл MMO</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<div class="wrapper">
+    <div id="adminPanel" style="display:none;">
+        <div class="admin-panel">
+            <div class="admin-info">
+                <div class="admin-avatar">👑</div>
+                <div><div class="admin-name" id="adminName"></div><div class="admin-role">Администратор</div></div>
+                <div class="admin-badge">ADMIN</div>
+            </div>
+            <div class="admin-actions">
+                <button class="admin-btn" onclick="openAdminPanel()">⚙️ Управление</button>
+                <button class="admin-btn logout-btn" onclick="logout()">🚪 Выйти</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="userPanel" style="display:none;">
+        <div class="admin-panel">
+            <div class="admin-info">
+                <div class="admin-avatar">👤</div>
+                <div><div class="admin-name" id="userName"></div><div class="admin-role">Пользователь</div></div>
+            </div>
+            <div class="admin-actions">
+                <button class="admin-btn logout-btn" onclick="logout()">🚪 Выйти</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-wrapper">
+        <a href="https://mobitva.net" target="_blank">mobitva.net</a>
+        <div class="site-title">⚔️ БАЗА ПРЕДМЕТОВ ⚔️</div>
+        <a href="https://mmobitva.ru" target="_blank">mmobitva.ru</a>
+    </div>
+
+    <div class="categories">
+        <button class="cat-btn" onclick="location.href='index.html'">🏠 Главная</button>
+    </div>
+
+    <div class="sort-panel">
+        <input type="text" id="search" placeholder="🔍 Поиск предмета...">
+        <div class="sort-controls">
+            <span class="sort-label">📊 Сортировка:</span>
+            <button class="sort-btn" onclick="sortTable('name')">По имени</button>
+            <button class="sort-btn" onclick="sortTable('level')">По уровню</button>
+            <div class="dropdown">
+                <button class="sort-btn dropdown-btn" id="typeDropdownBtn">По типу ▼</button>
+                <div class="dropdown-content" id="typeDropdown">
+                    <div class="dropdown-header">Выберите тип:</div>
+                    <div class="dropdown-option" onclick="sortByType('all')">📦 Все типы</div>
+                    <div class="dropdown-option" onclick="sortByType('оружие')">⚔️ Оружие</div>
+                    <div class="dropdown-option" onclick="sortByType('щит')">🛡️ Щит</div>
+                    <div class="dropdown-option" onclick="sortByType('броня')">👕 Броня</div>
+                    <div class="dropdown-option" onclick="sortByType('зелье')">🧪 Зелье</div>
+                    <div class="dropdown-option" onclick="sortByType('свиток')">📜 Свиток</div>
+                    <div class="dropdown-option" onclick="sortByType('амулет')">📿 Амулет</div>
+                    <div class="dropdown-option" onclick="sortByType('разное')">🎲 Разное</div>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="sort-btn dropdown-btn" id="styleDropdownBtn">По стилю ▼</button>
+                <div class="dropdown-content" id="styleDropdown">
+                    <div class="dropdown-header">Выберите стиль:</div>
+                    <div class="dropdown-option" onclick="sortByStyle('all')">📊 Все стили</div>
+                    <div class="dropdown-option" onclick="sortByStyle('rare')">🟢 Урон</div>
+                    <div class="dropdown-option" onclick="sortByStyle('uncommon')">🔵 Уворот</div>
+                    <div class="dropdown-option" onclick="sortByStyle('armor')">🔴 Броня</div>
+                    <div class="dropdown-option" onclick="sortByStyle('epic')">🟡 Элита</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table" id="item-table">
+        <tbody id="items-list"></tbody>
+    </table>
+</div>
+
+<script src="js/db.js"></script>
+<script src="js/common.js"></script>
+<script>
+if(!checkAuth()) { window.location.href = 'auth.html'; }
+
+let itemsData = [];
+let currentSort = { field: 'name', direction: 'asc' };
+let selectedTypeFilter = 'all';
+let selectedStyleFilter = 'all';
+
+async function loadItems() {
+    itemsData = await getItems();
+    renderItems();
+}
+
+function renderItems() {
+    const tbody = document.getElementById('items-list');
+    if(!tbody) return;
+    let html = '';
+    let filtered = [...itemsData];
+    
+    if(selectedTypeFilter !== 'all') {
+        filtered = filtered.filter(item => item.type.toLowerCase() === selectedTypeFilter);
+    }
+    if(selectedStyleFilter !== 'all') {
+        filtered = filtered.filter(item => item.style === selectedStyleFilter);
+    }
+    
+    filtered.sort((a,b) => {
+        if(currentSort.field === 'name') {
+            return currentSort.direction === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+        } else {
+            return currentSort.direction === 'asc' ? a.level - b.level : b.level - a.level;
+        }
+    });
+    
+    for(const item of filtered) {
+        const styleText = getRussianStyleText(item.style);
+        html += `<tr class="${item.type.toLowerCase()}" data-name="${item.name}" onclick="openItem(${item.id})">
+                    <td><div class="item-cell"><div class="item-icon shop-icon" style="--row:${item.icon_row}; --col:${item.icon_col};"></div>${escapeHtml(item.name)}</div></td>
+                    <td class="style-cell ${item.style}">${styleText}</td>
+                    <td>${item.type}</td>
+                    <td>${item.level}</td>
+                </tr>`;
+    }
+    tbody.innerHTML = html;
+}
+
+function openItem(id) { window.location.href = 'item.html?id=' + id; }
+function sortTable(field) { currentSort.direction = currentSort.field === field && currentSort.direction === 'asc' ? 'desc' : 'asc'; currentSort.field = field; renderItems(); }
+function sortByType(type) { selectedTypeFilter = type; renderItems(); }
+function sortByStyle(style) { selectedStyleFilter = style; renderItems(); }
+
+loadItems();
+document.addEventListener('DOMContentLoaded', displayAdminPanel);
+</script>
+</body>
+</html>

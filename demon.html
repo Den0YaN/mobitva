@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Круги Демона - Автобаттл MMO</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<div class="wrapper">
+    <div id="adminPanel" style="display:none;"><div class="admin-panel"><div class="admin-info"><div class="admin-avatar">👑</div><div><div class="admin-name" id="adminName"></div><div class="admin-role">Администратор</div></div><div class="admin-badge">ADMIN</div></div><div class="admin-actions"><button class="admin-btn" onclick="openAdminPanel()">⚙️ Управление</button><button class="admin-btn logout-btn" onclick="logout()">🚪 Выйти</button></div></div></div>
+    <div id="userPanel" style="display:none;"><div class="admin-panel"><div class="admin-info"><div class="admin-avatar">👤</div><div><div class="admin-name" id="userName"></div><div class="admin-role">Пользователь</div></div></div><div class="admin-actions"><button class="admin-btn logout-btn" onclick="logout()">🚪 Выйти</button></div></div></div>
+    <div class="header-wrapper"><a href="https://mobitva.net" target="_blank">mobitva.net</a><div class="site-title">🛡️ КРУГИ ДЕМОНА 🛡️</div><a href="https://mmobitva.ru" target="_blank">mmobitva.ru</a></div>
+    <div class="categories"><button class="cat-btn" onclick="location.href='main.html'">🏠 Главная</button><button class="cat-btn" onclick="location.reload()">🔄 Обновить</button></div>
+    <div class="circles-grid" id="circles-container"></div>
+</div>
+<div id="demonModal" class="demon-modal" style="display:none!important"><div class="demon-modal-content"><div class="demon-modal-header"><div class="demon-modal-close" onclick="closeDemonModal()">✕</div><div class="demon-modal-icon"><div class="item-icon" id="modalIcon"></div></div><div class="demon-modal-title" id="modalTitle"></div><div class="demon-modal-subtitle" id="modalSubtitle"></div></div><div class="demon-modal-body"><div class="demon-modal-stats"><div class="demon-modal-stats-title">📊 ХАРАКТЕРИСТИКИ</div><div id="modalStats"></div></div><div class="demon-modal-description" id="modalDescription"></div></div><div class="demon-modal-footer"><button class="demon-modal-btn" onclick="closeDemonModal()">Закрыть</button></div></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/db.js"></script>
+<script src="js/common.js"></script>
+<script>
+if(!checkAuth()) { window.location.href = 'auth.html'; }
+async function renderDemons() {
+    const demons = await getDemons();
+    const container = document.getElementById('circles-container');
+    if(!container) return;
+    let html = '';
+    for(const d of demons) {
+        const statsHtml = Object.entries(d.stats).map(([n,v]) => `<div class="circle-stat-line"><div class="circle-stat-name"><span class="circle-stat-icon ${getStatIconClass(n)}"></span><span>${n}:</span></div><div class="circle-stat-value">${v}</div></div>`).join('');
+        html += `<div class="circle-card" onclick="openDemonModal(${d.id})">
+                    <div class="circle-header">
+                        <div class="circle-icon shop-icon" style="--row:${d.icon_row}; --col:${d.icon_col};"></div>
+                        <div class="circle-title"><div class="circle-name">${escapeHtml(d.name)}</div><div class="circle-level">📊 Уровень ${d.level}</div></div>
+                    </div>
+                    <div class="circle-stats">${statsHtml}</div>
+                    <div class="circle-description">${escapeHtml(d.description)}</div>
+                </div>`;
+    }
+    container.innerHTML = html;
+}
+function openDemonModal(id) {
+    const modal = document.getElementById('demonModal');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+function closeDemonModal() { document.getElementById('demonModal').style.display = 'none'; document.body.style.overflow = ''; }
+renderDemons(); document.addEventListener('DOMContentLoaded', displayAdminPanel);
+</script>
+</body>
+</html>
