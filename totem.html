@@ -1,28 +1,84 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Тотем клана - Автобаттл MMO</title><link rel="stylesheet" href="style.css"></head>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тотем клана - Автобаттл MMO</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
 <body>
-<div class="wrapper">
-    <div id="adminPanel" style="display:none;"><div class="admin-panel"><div class="admin-info"><div class="admin-avatar">👑</div><div><div class="admin-name" id="adminName"></div><div class="admin-role">Администратор</div></div><div class="admin-badge">ADMIN</div></div><div class="admin-actions"><button class="admin-btn" onclick="openAdminPanel()">⚙️ Управление</button><button class="admin-btn logout-btn" onclick="logout()">🚪 Выйти</button></div></div></div>
-    <div id="userPanel" style="display:none;"><div class="admin-panel"><div class="admin-info"><div class="admin-avatar">👤</div><div><div class="admin-name" id="userName"></div><div class="admin-role">Пользователь</div></div></div><div class="admin-actions"><button class="admin-btn logout-btn" onclick="logout()">🚪 Выйти</button></div></div></div>
-    <div class="header-wrapper"><a href="https://mobitva.net" target="_blank">mobitva.net</a><div class="site-title">🧪 ТОТЕМ КЛАНА 🧪</div><a href="https://mmobitva.ru" target="_blank">mmobitva.ru</a></div>
-    <div class="categories"><button class="cat-btn" onclick="location.href='main.html'">🏠 Главная</button><button class="cat-btn" onclick="location.reload()">🔄 Обновить</button></div>
-    <div class="totems-grid" id="totems-container"></div>
-</div>
-<div id="totemModal" class="totem-modal" style="display:none!important"><div class="totem-modal-content"><div class="totem-modal-header"><div class="totem-modal-close" onclick="closeTotemModal()">✕</div><div class="totem-modal-icon"><div class="item-icon" id="modalIcon"></div></div><div class="totem-modal-title" id="modalTitle"></div><div class="totem-modal-subtitle" id="modalSubtitle"></div></div><div class="totem-modal-body"><div class="totem-modal-stats"><div class="totem-modal-stats-title">📊 ХАРАКТЕРИСТИКИ</div><div id="modalStats"></div></div><div class="totem-modal-description" id="modalDescription"></div></div><div class="totem-modal-footer"><button class="totem-modal-btn" onclick="closeTotemModal()">Закрыть</button></div></div></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/db.js"></script>
-<script src="js/common.js"></script>
-<script>
-if(!checkAuth()) { window.location.href = 'auth.html'; }
-async function renderTotems() {
-    const totems = await getTotems();
-    const container = document.getElementById('totems-container');
-    if(!container) return;
-    let html = '';
-    for(const t of totems) {
-        const statsHtml = Object.entries(t.stats).map(([n,v]) => `<div class="totem-stat-line"><div class="totem-stat-name"><span class="totem-stat-icon ${getStatIconClass(n)}"></span><span>${n}:</span></div><div class="totem-stat-value">${v}</div></div>`).join('');
-        html += `<div class="totem-card" onclick="openTotemModal(${t.id})">
+    <div class="wrapper">
+        <div id="adminPanel" style="display:none;">
+            <div class="admin-panel">
+                <div class="admin-info">
+                    <div class="admin-avatar">👑</div>
+                    <div>
+                        <div class="admin-name" id="adminName"></div>
+                        <div class="admin-role">Администратор</div>
+                    </div>
+                    <div class="admin-badge">ADMIN</div>
+                </div>
+                <div class="admin-actions"><button class="admin-btn" onclick="openAdminPanel()">⚙️
+                        Управление</button><button class="admin-btn logout-btn" onclick="logout()">🚪 Выйти</button>
+                </div>
+            </div>
+        </div>
+        <div id="userPanel" style="display:none;">
+            <div class="admin-panel">
+                <div class="admin-info">
+                    <div class="admin-avatar">👤</div>
+                    <div>
+                        <div class="admin-name" id="userName"></div>
+                        <div class="admin-role">Пользователь</div>
+                    </div>
+                </div>
+                <div class="admin-actions"><button class="admin-btn logout-btn" onclick="logout()">🚪 Выйти</button>
+                </div>
+            </div>
+        </div>
+        <div class="header-wrapper"><a href="https://mobitva.net" target="_blank">mobitva.net</a>
+            <div class="site-title">🧪 ТОТЕМ КЛАНА 🧪</div><a href="https://mmobitva.ru" target="_blank">mmobitva.ru</a>
+        </div>
+        <div class="categories"><button class="cat-btn" onclick="location.href='index.html'">🏠 Главная</button><button
+                class="cat-btn" onclick="location.reload()">🔄 Обновить</button></div>
+        <div class="totems-grid" id="totems-container"></div>
+    </div>
+    <div id="totemModal" class="totem-modal" style="display:none!important">
+        <div class="totem-modal-content">
+            <div class="totem-modal-header">
+                <div class="totem-modal-close" onclick="closeTotemModal()">✕</div>
+                <div class="totem-modal-icon">
+                    <div class="item-icon" id="modalIcon"></div>
+                </div>
+                <div class="totem-modal-title" id="modalTitle"></div>
+                <div class="totem-modal-subtitle" id="modalSubtitle"></div>
+            </div>
+            <div class="totem-modal-body">
+                <div class="totem-modal-stats">
+                    <div class="totem-modal-stats-title">📊 ХАРАКТЕРИСТИКИ</div>
+                    <div id="modalStats"></div>
+                </div>
+                <div class="totem-modal-description" id="modalDescription"></div>
+            </div>
+            <div class="totem-modal-footer"><button class="totem-modal-btn" onclick="closeTotemModal()">Закрыть</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/db.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+        if (!checkAuth()) { window.location.href = 'auth.html'; }
+        async function renderTotems() {
+            const totems = await getTotems();
+            const container = document.getElementById('totems-container');
+            if (!container) return;
+            let html = '';
+            for (const t of totems) {
+                const statsHtml = Object.entries(t.stats).map(([n, v]) => `<div class="totem-stat-line"><div class="totem-stat-name"><span class="totem-stat-icon ${getStatIconClass(n)}"></span><span>${n}:</span></div><div class="totem-stat-value">${v}</div></div>`).join('');
+                html += `<div class="totem-card" onclick="openTotemModal(${t.id})">
                     <div class="totem-header">
                         <div class="totem-icon shop-icon" style="--row:${t.icon_row}; --col:${t.icon_col};"></div>
                         <div class="totem-title">
@@ -33,12 +89,36 @@ async function renderTotems() {
                     <div class="totem-stats">${statsHtml}</div>
                     <div class="totem-description">${escapeHtml(t.description)}</div>
                 </div>`;
-    }
-    container.innerHTML = html;
-}
-function openTotemModal(id) { document.getElementById('totemModal').style.display = 'flex'; document.body.style.overflow = 'hidden'; }
-function closeTotemModal() { document.getElementById('totemModal').style.display = 'none'; document.body.style.overflow = ''; }
-renderTotems(); document.addEventListener('DOMContentLoaded', displayAdminPanel);
-</script>
+            }
+            container.innerHTML = html;
+        }
+        function openTotemModal(id) {
+            const totem = totems.find(t => t.id === id);
+            if(!totem) return;
+            
+            document.getElementById('modalIcon').className = `item-icon ${totem.icon}`;
+            document.getElementById('modalTitle').innerText = totem.name;
+            document.getElementById('modalSubtitle').innerHTML = `📊 Уровень ${totem.level} | ⭐ Требуется ${totem.required_level}+ уровень`;
+            document.getElementById('modalDescription').innerHTML = totem.description;
+            
+            const statsHtml = Object.entries(totem.stats).map(([name, value]) => {
+                const iconClass = getStatIconClass(name);
+                return `<div class="totem-modal-stat-line">
+                            <div class="totem-modal-stat-name">
+                                <span class="totem-stat-icon ${iconClass}"></span>
+                                <span>${name}:</span>
+                            </div>
+                            <div class="totem-modal-stat-value">${value}</div>
+                        </div>`;
+            }).join('');
+            
+            document.getElementById('modalStats').innerHTML = statsHtml;
+            document.getElementById('totemModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        function closeTotemModal() { document.getElementById('totemModal').style.display = 'none'; document.body.style.overflow = ''; }
+        renderTotems(); document.addEventListener('DOMContentLoaded', displayAdminPanel);
+    </script>
 </body>
+
 </html>
