@@ -62,15 +62,11 @@
             color: #d4b35a;
         }
 
-        .admin-table tr:hover {
-            background: #2a2420;
-        }
-
         .edit-item-btn {
             background: #c7ba00;
             border: none;
             border-radius: 4px;
-            padding: 4px 8px;
+            padding: 4px 12px;
             cursor: pointer;
             margin-right: 5px;
         }
@@ -79,7 +75,7 @@
             background: #ff4444;
             border: none;
             border-radius: 4px;
-            padding: 4px 8px;
+            padding: 4px 12px;
             color: white;
             cursor: pointer;
         }
@@ -117,7 +113,7 @@
             border: 2px solid #c7ba00;
             border-radius: 16px;
             padding: 20px;
-            width: 700px;
+            width: 600px;
             max-width: 90%;
             max-height: 85vh;
             overflow-y: auto;
@@ -140,48 +136,25 @@
             margin-top: 10px;
         }
 
-        .stats-grid-editor {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .stat-field {
-            background: #0d0a07;
-            border: 1px solid #c7ba00;
-            border-radius: 8px;
-            padding: 8px;
+        .stat-row {
             display: flex;
-            align-items: center;
             gap: 10px;
-        }
-
-        .stat-field label {
-            font-size: 11px;
-            color: #c7ba00;
-            display: flex;
+            margin-bottom: 10px;
             align-items: center;
-            gap: 5px;
-            min-width: 70px;
         }
 
-        .stat-field input {
+        .stat-row input {
             flex: 1;
-            background: #1a1612;
-            border: 1px solid #4a3f32;
-            border-radius: 6px;
-            padding: 6px;
-            color: #e8dcc0;
+            margin-bottom: 0;
         }
 
-        .stat-field .stat-icon {
-            width: 24px;
-            height: 24px;
-            background-image: url('img/icons.png');
-            background-repeat: no-repeat;
-            background-size: auto 24px;
-            display: inline-block;
+        .stat-row button {
+            background: #ff4444;
+            border: none;
+            border-radius: 6px;
+            padding: 4px 10px;
+            color: white;
+            cursor: pointer;
         }
 
         .icon-grid-admin {
@@ -211,29 +184,14 @@
             border-color: #ffaa44;
         }
 
-        .unique-field {
-            background: #0d0a07;
-            border: 1px solid #c7ba00;
-            border-radius: 8px;
-            padding: 8px;
-            margin-bottom: 10px;
-            display: flex;
-            gap: 8px;
-            align-items: center;
+        .form-group {
+            margin-bottom: 15px;
         }
 
-        .unique-field input {
-            flex: 1;
-            margin-bottom: 0;
-        }
-
-        .unique-field button {
-            background: #ff4444;
-            border: none;
-            border-radius: 6px;
-            padding: 4px 10px;
-            color: white;
-            cursor: pointer;
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #c7ba00;
         }
     </style>
 </head>
@@ -257,8 +215,8 @@
             <div class="admin-tab" data-tab="users">👥 Пользователи</div>
         </div>
 
-        <div id="itemsPanel" class="admin-panel-content active"><button class="add-btn"
-                onclick="openAddModal('items')">➕ Добавить предмет</button>
+        <div id="itemsPanel" class="admin-panel-content active"><button class="add-btn" onclick="openModal('items')">➕
+                Добавить предмет</button>
             <table class="admin-table" id="itemsTable">
                 <thead>
                     <tr>
@@ -272,7 +230,7 @@
                 <tbody id="itemsList"></tbody>
             </table>
         </div>
-        <div id="demonsPanel" class="admin-panel-content"><button class="add-btn" onclick="openAddModal('demons')">➕
+        <div id="demonsPanel" class="admin-panel-content"><button class="add-btn" onclick="openModal('demons')">➕
                 Добавить круг</button>
             <table class="admin-table" id="demonsTable">
                 <thead>
@@ -286,7 +244,7 @@
                 <tbody id="demonsList"></tbody>
             </table>
         </div>
-        <div id="totemsPanel" class="admin-panel-content"><button class="add-btn" onclick="openAddModal('totems')">➕
+        <div id="totemsPanel" class="admin-panel-content"><button class="add-btn" onclick="openModal('totems')">➕
                 Добавить тотем</button>
             <table class="admin-table" id="totemsTable">
                 <thead>
@@ -299,9 +257,9 @@
                     </tr>
                 </thead>
                 <tbody id="totemsList"></tbody>
-                </td>
+            </table>
         </div>
-        <div id="masterPanel" class="admin-panel-content"><button class="add-btn" onclick="openAddModal('master')">➕
+        <div id="masterPanel" class="admin-panel-content"><button class="add-btn" onclick="openModal('master')">➕
                 Добавить руну</button>
             <table class="admin-table" id="masterTable">
                 <thead>
@@ -313,9 +271,9 @@
                     </tr>
                 </thead>
                 <tbody id="masterList"></tbody>
-            </table>
+                <tr>
         </div>
-        <div id="druidsPanel" class="admin-panel-content"><button class="add-btn" onclick="openAddModal('druids')">➕
+        <div id="druidsPanel" class="admin-panel-content"><button class="add-btn" onclick="openModal('druids')">➕
                 Добавить руну</button>
             <table class="admin-table" id="druidsTable">
                 <thead>
@@ -329,8 +287,8 @@
                 <tbody id="druidsList"></tbody>
                 </tr>
         </div>
-        <div id="newsPanel" class="admin-panel-content"><button class="add-btn" onclick="openAddModal('news')">➕
-                Добавить новость</button>
+        <div id="newsPanel" class="admin-panel-content"><button class="add-btn" onclick="openModal('news')">➕ Добавить
+                новость</button>
             <table class="admin-table" id="newsTable">
                 <thead>
                     <tr>
@@ -355,14 +313,14 @@
                     </tr>
                 </thead>
                 <tbody id="usersList"></tbody>
-                </tr>
+            </table>
         </div>
     </div>
 
     <div id="editModal" class="modal">
         <div class="modal-content">
             <h2 id="modalTitle">Добавить</h2>
-            <div id="modalFields"></div><button class="cat-btn" onclick="saveItem()">💾 Сохранить</button><button
+            <div id="modalFields"></div><button class="cat-btn" onclick="saveData()">💾 Сохранить</button><button
                 class="cat-btn" onclick="closeModal()">Отмена</button>
         </div>
     </div>
@@ -375,7 +333,7 @@
     <script>
         const user = checkAuth(); if (!user || user.role !== 'admin') { alert('Доступ запрещён!'); window.location.href = 'index.html'; }
 
-        let currentEditType = null, currentEditId = null, currentPickerId = null;
+        let currentType = null, currentId = null, currentPickerId = null;
 
         // Переключение вкладок
         document.querySelectorAll('.admin-tab').forEach(tab => {
@@ -383,13 +341,12 @@
                 document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
                 document.querySelectorAll('.admin-panel-content').forEach(p => p.classList.remove('active'));
                 tab.classList.add('active');
-                document.getElementById(tab.dataset.tab + 'Panel').classList.add('active');
-                loadData(tab.dataset.tab);
+                loadTable(tab.dataset.tab);
             });
         });
 
-        // Загрузка данных
-        async function loadData(type) {
+        // Загрузка таблиц
+        async function loadTable(type) {
             if (type === 'items') renderItems(await getItems());
             if (type === 'demons') renderDemons(await getDemons());
             if (type === 'totems') renderTotems(await getTotems());
@@ -399,22 +356,16 @@
             if (type === 'users') renderUsers(await getUsers());
         }
 
-        // Рендеры таблиц
-        function renderItems(data) { const tbody = document.getElementById('itemsList'); if (!tbody) return; let html = ''; for (const item of data) html += `<tr><td>${item.id}</td><td>${escapeHtml(item.name)}</td><td>${item.type}</td><td>${item.level}</td><td><button class="edit-item-btn" onclick="openEditModal('items',${item.id})">✏️</button><button class="delete-item-btn" onclick="deleteItem('items',${item.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
-        function renderDemons(data) { const tbody = document.getElementById('demonsList'); if (!tbody) return; let html = ''; for (const d of data) html += `<tr><td>${d.id}</td><td>${escapeHtml(d.name)}</td><td>${d.level}</td><td><button class="edit-item-btn" onclick="openEditModal('demons',${d.id})">✏️</button><button class="delete-item-btn" onclick="deleteItem('demons',${d.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
-        function renderTotems(data) { const tbody = document.getElementById('totemsList'); if (!tbody) return; let html = ''; for (const t of data) html += `<tr><td>${t.id}</td><td>${escapeHtml(t.name)}</td><td>${t.level}</td><td>${t.required_level}</td><td><button class="edit-item-btn" onclick="openEditModal('totems',${t.id})">✏️</button><button class="delete-item-btn" onclick="deleteItem('totems',${t.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
-        function renderMaster(data) { const tbody = document.getElementById('masterList'); if (!tbody) return; let html = ''; for (const r of data) html += `<tr><td>${r.id}</td><td>${escapeHtml(r.name)}</td><td>${r.level}</td><td><button class="edit-item-btn" onclick="openEditModal('master',${r.id})">✏️</button><button class="delete-item-btn" onclick="deleteItem('master',${r.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
-        function renderDruids(data) { const tbody = document.getElementById('druidsList'); if (!tbody) return; let html = ''; for (const r of data) html += `<tr><td>${r.id}</td><td>${escapeHtml(r.name)}</td><td>${r.level}</td><td><button class="edit-item-btn" onclick="openEditModal('druids',${r.id})">✏️</button><button class="delete-item-btn" onclick="deleteItem('druids',${r.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
-        function renderNews(data) { const tbody = document.getElementById('newsList'); if (!tbody) return; let html = ''; for (const n of data) html += `<tr><td>${n.id}</td><td>${escapeHtml(n.title)}</td><td>${n.date}</td><td><button class="edit-item-btn" onclick="openEditModal('news',${n.id})">✏️</button><button class="delete-item-btn" onclick="deleteItem('news',${n.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
-        function renderUsers(data) { const tbody = document.getElementById('usersList'); if (!tbody) return; let html = ''; for (const u of data) html += `<tr><td>${u.id}</td><td>${escapeHtml(u.login)}</td><td>${escapeHtml(u.email || '-')}</td><td>${u.role}</td><td><button class="delete-item-btn" onclick="deleteUser(${u.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
+        function renderItems(data) { const tbody = document.getElementById('itemsList'); if (!tbody) return; let html = ''; for (const d of data) html += `<tr><td>${d.id}</td><td>${escapeHtml(d.name)}</td><td>${d.type}</td><td>${d.level}</td><td><button class="edit-item-btn" onclick="openModal('items',${d.id})">✏️</button><button class="delete-item-btn" onclick="deleteRow('items',${d.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
+        function renderDemons(data) { const tbody = document.getElementById('demonsList'); if (!tbody) return; let html = ''; for (const d of data) html += `<tr><td>${d.id}</td><td>${escapeHtml(d.name)}</td><td>${d.level}</td><td><button class="edit-item-btn" onclick="openModal('demons',${d.id})">✏️</button><button class="delete-item-btn" onclick="deleteRow('demons',${d.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
+        function renderTotems(data) { const tbody = document.getElementById('totemsList'); if (!tbody) return; let html = ''; for (const d of data) html += `<tr><td>${d.id}</td><td>${escapeHtml(d.name)}</td><td>${d.level}</td><td>${d.required_level}</td><td><button class="edit-item-btn" onclick="openModal('totems',${d.id})">✏️</button><button class="delete-item-btn" onclick="deleteRow('totems',${d.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
+        function renderMaster(data) { const tbody = document.getElementById('masterList'); if (!tbody) return; let html = ''; for (const d of data) html += `<tr><td>${d.id}</td><td>${escapeHtml(d.name)}</td><td>${d.level}</td><td><button class="edit-item-btn" onclick="openModal('master',${d.id})">✏️</button><button class="delete-item-btn" onclick="deleteRow('master',${d.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
+        function renderDruids(data) { const tbody = document.getElementById('druidsList'); if (!tbody) return; let html = ''; for (const d of data) html += `<tr><td>${d.id}</td><td>${escapeHtml(d.name)}</td><td>${d.level}</td><td><button class="edit-item-btn" onclick="openModal('druids',${d.id})">✏️</button><button class="delete-item-btn" onclick="deleteRow('druids',${d.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
+        function renderNews(data) { const tbody = document.getElementById('newsList'); if (!tbody) return; let html = ''; for (const d of data) html += `<tr><td>${d.id}</td><td>${escapeHtml(d.title)}</td><td>${d.date}</td><td><button class="edit-item-btn" onclick="openModal('news',${d.id})">✏️</button><button class="delete-item-btn" onclick="deleteRow('news',${d.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
+        function renderUsers(data) { const tbody = document.getElementById('usersList'); if (!tbody) return; let html = ''; for (const d of data) html += `<tr><td>${d.id}</td><td>${escapeHtml(d.login)}</td><td>${escapeHtml(d.email || '-')}</td><td>${d.role}</td><td><button class="delete-item-btn" onclick="deleteRow('users',${d.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
 
         // Удаление
-        async function deleteItem(type, id) { if (confirm('Удалить?')) { if (type === 'items') await deleteItemById(id); if (type === 'demons') await deleteDemonById(id); if (type === 'totems') await deleteTotemById(id); if (type === 'master') await deleteMasterRuneById(id); if (type === 'druids') await deleteDruidsRuneById(id); if (type === 'news') await deleteNewsById(id); loadData(type); } }
-        async function deleteUser(id) { if (confirm('Удалить пользователя?')) { await db.from('users').delete().eq('id', id); loadData('users'); } }
-
-        // Открытие модалок
-        function openAddModal(type) { currentEditType = type; currentEditId = null; document.getElementById('modalTitle').innerText = '➕ Добавить'; showModalFields(type, null); document.getElementById('editModal').style.display = 'flex'; }
-        function openEditModal(type, id) { currentEditType = type; currentEditId = id; document.getElementById('modalTitle').innerText = '✏️ Редактировать'; showModalFields(type, id); document.getElementById('editModal').style.display = 'flex'; }
+        async function deleteRow(type, id) { if (confirm('Удалить?')) { if (type === 'items') await deleteItemById(id); if (type === 'demons') await deleteDemonById(id); if (type === 'totems') await deleteTotemById(id); if (type === 'master') await deleteMasterRuneById(id); if (type === 'druids') await deleteDruidsRuneById(id); if (type === 'news') await deleteNewsById(id); if (type === 'users') await db.from('users').delete().eq('id', id); loadTable(type); } }
 
         // Генерация сетки иконок
         function generateAdminIconGrid() {
@@ -425,325 +376,154 @@
                     const div = document.createElement('div');
                     div.className = 'icon-cell-admin';
                     div.style.backgroundPosition = `-${c * 48}px -${r * 48}px`;
-                    div.onclick = (function (row, col) {
-                        return function () {
-                            if (currentPickerId) {
-                                document.getElementById(currentPickerId.rowId).value = row;
-                                document.getElementById(currentPickerId.colId).value = col;
-                                document.getElementById(currentPickerId.previewId).innerHTML = `Выбрано: ряд ${row + 1}, колонка ${col + 1}`;
-                            }
-                            grid.style.display = 'none';
-                        };
-                    })(r, c);
+                    div.onclick = (function (row, col) { return function () { if (currentPickerId) { document.getElementById(currentPickerId.rowId).value = row; document.getElementById(currentPickerId.colId).value = col; document.getElementById(currentPickerId.previewId).innerHTML = `Выбрано: ряд ${row + 1}, колонка ${col + 1}`; } grid.style.display = 'none'; }; })(r, c);
                     grid.appendChild(div);
                 }
             }
         }
-        function openIconPickerAdmin(rowId, colId, previewId) {
-            currentPickerId = { rowId, colId, previewId };
-            const grid = document.getElementById('globalIconPickerAdmin');
-            generateAdminIconGrid();
-            grid.style.display = 'grid';
-        }
+        function openIconPicker(rowId, colId, previewId) { currentPickerId = { rowId, colId, previewId }; const grid = document.getElementById('globalIconPickerAdmin'); generateAdminIconGrid(); grid.style.display = 'grid'; }
 
-        // Поля формы
-        function showModalFields(type, id) {
+        // Открытие модалки
+        async function openModal(type, id = null) {
+            currentType = type;
+            currentId = id;
+            document.getElementById('modalTitle').innerText = id ? '✏️ Редактировать' : '➕ Добавить';
             const container = document.getElementById('modalFields');
             let html = '';
 
             if (type === 'items') {
-                html = `
-            <input type="text" id="name" placeholder="Название" value="">
-            <input type="text" id="item_type" placeholder="Тип" value="">
-            <input type="number" id="level" placeholder="Уровень" value="">
-            <button class="cat-btn" onclick="openIconPickerAdmin('icon_row','icon_col','iconPreview')">🎨 Выбрать иконку</button>
-            <div id="iconPreview">Не выбрано</div>
-            <input type="hidden" id="icon_row" value="19">
-            <input type="hidden" id="icon_col" value="4">
-            <div class="stats-grid-editor" id="statsEditor"></div>
-            <div id="uniqueContainer"></div>
-            <button class="add-stat-btn" onclick="addUniqueField()">➕ Добавить уникальную характеристику</button>
-        `;
-                if (id) loadDataToForm('items', id); else initEmptyItemStats();
-            }
-            else if (type === 'demons' || type === 'totems' || type === 'master' || type === 'druids') {
-                let extraFields = '';
-                if (type === 'totems') extraFields = `<input type="number" id="required_level" placeholder="Требуемый уровень" value="">`;
-                html = `
-            <input type="text" id="name" placeholder="Название" value="">
-            <input type="number" id="level" placeholder="Уровень" value="">
-            ${extraFields}
-            <button class="cat-btn" onclick="openIconPickerAdmin('icon_row','icon_col','iconPreview')">🎨 Выбрать иконку</button>
-            <div id="iconPreview">Не выбрано</div>
-            <input type="hidden" id="icon_row" value="19">
-            <input type="hidden" id="icon_col" value="4">
-            <div class="stats-grid-editor" id="statsEditor"></div>
-            <textarea id="description" placeholder="Описание" rows="4"></textarea>
-        `;
-                if (id) loadDataToForm(type, id); else initEmptyStats();
-            }
-            else if (type === 'news') {
-                html = `
-            <input type="text" id="title" placeholder="Заголовок" value="">
-            <textarea id="content" placeholder="Текст" rows="4"></textarea>
-            <input type="date" id="date" placeholder="Дата" value="">
-        `;
-                if (id) loadDataToForm('news', id);
-            }
-            container.innerHTML = html;
-        }
-
-        // Инициализация пустых полей характеристик для предметов
-        function initEmptyItemStats() {
-            const container = document.getElementById('statsEditor');
-            const stats = ['уровень', 'износ', 'количество', 'годность', 'точность', 'урон', 'блок', 'уворот', 'оглушение', 'броня', 'здоровье'];
-            const icons = {
-                'уровень': 'stat-icon-уровень', 'износ': 'stat-icon-износ', 'количество': 'stat-icon-количество', 'годность': 'stat-icon-годность',
-                'точность': 'stat-icon-точность', 'урон': 'stat-icon-урон', 'блок': 'stat-icon-блок', 'уворот': 'stat-icon-уворот',
-                'оглушение': 'stat-icon-оглушение', 'броня': 'stat-icon-броня', 'здоровье': 'stat-icon-здоровье'
-            };
-            container.innerHTML = '';
-            stats.forEach(stat => {
-                const div = document.createElement('div');
-                div.className = 'stat-field';
-                div.innerHTML = `<label><span class="stat-icon ${icons[stat]}"></span> ${stat.charAt(0).toUpperCase() + stat.slice(1)}:</label><input type="text" class="stat-val-${stat}" placeholder="Значение">`;
-                container.appendChild(div);
-            });
-            document.getElementById('uniqueContainer').innerHTML = '';
-        }
-
-        // Инициализация пустых полей характеристик для демонов/тотемов/рун
-        function initEmptyStats() {
-            const container = document.getElementById('statsEditor');
-            const stats = ['точность', 'урон', 'блок', 'уворот', 'оглушение', 'броня', 'здоровье'];
-            const icons = {
-                'точность': 'stat-icon-точность', 'урон': 'stat-icon-урон', 'блок': 'stat-icon-блок', 'уворот': 'stat-icon-уворот',
-                'оглушение': 'stat-icon-оглушение', 'броня': 'stat-icon-броня', 'здоровье': 'stat-icon-здоровье'
-            };
-            container.innerHTML = '';
-            stats.forEach(stat => {
-                const div = document.createElement('div');
-                div.className = 'stat-field';
-                div.innerHTML = `<label><span class="stat-icon ${icons[stat]}"></span> ${stat.charAt(0).toUpperCase() + stat.slice(1)}:</label><input type="text" class="stat-val-${stat}" placeholder="Значение">`;
-                container.appendChild(div);
-            });
-        }
-
-        // Заполнение формы при редактировании
-        async function loadDataToForm(type, id) {
-            let data;
-            if (type === 'items') {
-                const res = await db.from('items').select('*').eq('id', id);
-                data = res.data[0];
-                if (data) {
-                    document.getElementById('name').value = data.name;
-                    document.getElementById('item_type').value = data.type;
-                    document.getElementById('level').value = data.level;
-                    document.getElementById('icon_row').value = data.icon_row;
-                    document.getElementById('icon_col').value = data.icon_col;
-                    document.getElementById('iconPreview').innerHTML = `Текущая: ряд ${data.icon_row + 1}, колонка ${data.icon_col + 1}`;
-                    const stats = data.stats || {};
-                    const statsList = ['уровень', 'износ', 'количество', 'годность', 'точность', 'урон', 'блок', 'уворот', 'оглушение', 'броня', 'здоровье'];
-                    statsList.forEach(stat => {
-                        const input = document.querySelector(`.stat-val-${stat}`);
-                        if (input) input.value = stats[stat] || '';
-                    });
-                    const uniqueContainer = document.getElementById('uniqueContainer');
-                    uniqueContainer.innerHTML = '';
-                    const uniqueStats = data.unique_stats || [];
-                    uniqueStats.forEach(stat => addUniqueField(stat));
-                }
+                html = `<div class="form-group"><label>Название</label><input type="text" id="itemName"></div>
+                <div class="form-group"><label>Тип</label><input type="text" id="itemType"></div>
+                <div class="form-group"><label>Уровень</label><input type="number" id="itemLevel"></div>
+                <div class="form-group"><button class="cat-btn" onclick="openIconPicker('iconRow','iconCol','iconPreview')">🎨 Выбрать иконку</button><div id="iconPreview">Не выбрано</div><input type="hidden" id="iconRow" value="19"><input type="hidden" id="iconCol" value="4"></div>
+                <div class="form-group"><label>Характеристики (JSON)</label><textarea id="itemStats" rows="5" placeholder='{"урон":"+5","здоровье":"+10"}'></textarea></div>
+                <div class="form-group"><label>Уникальные характеристики</label><textarea id="itemUnique" rows="3" placeholder='["Уникальная характеристика 1","Уникальная характеристика 2"]'></textarea></div>`;
+                if (id) { const data = await getItemById(id); if (data) { document.getElementById('itemName').value = data.name; document.getElementById('itemType').value = data.type; document.getElementById('itemLevel').value = data.level; document.getElementById('iconRow').value = data.icon_row; document.getElementById('iconCol').value = data.icon_col; document.getElementById('iconPreview').innerHTML = `Текущая: ряд ${data.icon_row + 1}, колонка ${data.icon_col + 1}`; document.getElementById('itemStats').value = JSON.stringify(data.stats, null, 2); document.getElementById('itemUnique').value = JSON.stringify(data.unique_stats || []); } }
             }
             else if (type === 'demons') {
-                const res = await db.from('demons').select('*').eq('id', id);
-                data = res.data[0];
-                if (data) {
-                    document.getElementById('name').value = data.name;
-                    document.getElementById('level').value = data.level;
-                    document.getElementById('icon_row').value = data.icon_row;
-                    document.getElementById('icon_col').value = data.icon_col;
-                    document.getElementById('iconPreview').innerHTML = `Текущая: ряд ${data.icon_row + 1}, колонка ${data.icon_col + 1}`;
-                    document.getElementById('description').value = data.description;
-                    const stats = data.stats || {};
-                    const statsList = ['точность', 'урон', 'блок', 'уворот', 'оглушение', 'броня', 'здоровье'];
-                    statsList.forEach(stat => {
-                        const input = document.querySelector(`.stat-val-${stat}`);
-                        if (input) input.value = stats[stat] || '';
-                    });
-                }
+                html = `<div class="form-group"><label>Название</label><input type="text" id="demonName"></div>
+                <div class="form-group"><label>Уровень</label><input type="number" id="demonLevel"></div>
+                <div class="form-group"><button class="cat-btn" onclick="openIconPicker('iconRow','iconCol','iconPreview')">🎨 Выбрать иконку</button><div id="iconPreview">Не выбрано</div><input type="hidden" id="iconRow" value="19"><input type="hidden" id="iconCol" value="4"></div>
+                <div class="form-group"><label>Характеристики (JSON)</label><textarea id="demonStats" rows="5" placeholder='{"урон":"+3","броня":"+4"}'></textarea></div>
+                <div class="form-group"><label>Описание</label><textarea id="demonDesc" rows="3"></textarea></div>`;
+                if (id) { const data = await getDemonById(id); if (data) { document.getElementById('demonName').value = data.name; document.getElementById('demonLevel').value = data.level; document.getElementById('iconRow').value = data.icon_row; document.getElementById('iconCol').value = data.icon_col; document.getElementById('iconPreview').innerHTML = `Текущая: ряд ${data.icon_row + 1}, колонка ${data.icon_col + 1}`; document.getElementById('demonStats').value = JSON.stringify(data.stats, null, 2); document.getElementById('demonDesc').value = data.description; } }
             }
             else if (type === 'totems') {
-                const res = await db.from('totems').select('*').eq('id', id);
-                data = res.data[0];
-                if (data) {
-                    document.getElementById('name').value = data.name;
-                    document.getElementById('level').value = data.level;
-                    document.getElementById('required_level').value = data.required_level;
-                    document.getElementById('icon_row').value = data.icon_row;
-                    document.getElementById('icon_col').value = data.icon_col;
-                    document.getElementById('iconPreview').innerHTML = `Текущая: ряд ${data.icon_row + 1}, колонка ${data.icon_col + 1}`;
-                    document.getElementById('description').value = data.description;
-                    const stats = data.stats || {};
-                    const statsList = ['точность', 'урон', 'блок', 'уворот', 'оглушение', 'броня', 'здоровье'];
-                    statsList.forEach(stat => {
-                        const input = document.querySelector(`.stat-val-${stat}`);
-                        if (input) input.value = stats[stat] || '';
-                    });
-                }
+                html = `<div class="form-group"><label>Название</label><input type="text" id="totemName"></div>
+                <div class="form-group"><label>Уровень</label><input type="number" id="totemLevel"></div>
+                <div class="form-group"><label>Требуемый уровень</label><input type="number" id="totemRequired"></div>
+                <div class="form-group"><button class="cat-btn" onclick="openIconPicker('iconRow','iconCol','iconPreview')">🎨 Выбрать иконку</button><div id="iconPreview">Не выбрано</div><input type="hidden" id="iconRow" value="19"><input type="hidden" id="iconCol" value="4"></div>
+                <div class="form-group"><label>Характеристики (JSON)</label><textarea id="totemStats" rows="5"></textarea></div>
+                <div class="form-group"><label>Описание</label><textarea id="totemDesc" rows="3"></textarea></div>`;
+                if (id) { const data = await getTotemById(id); if (data) { document.getElementById('totemName').value = data.name; document.getElementById('totemLevel').value = data.level; document.getElementById('totemRequired').value = data.required_level; document.getElementById('iconRow').value = data.icon_row; document.getElementById('iconCol').value = data.icon_col; document.getElementById('iconPreview').innerHTML = `Текущая: ряд ${data.icon_row + 1}, колонка ${data.icon_col + 1}`; document.getElementById('totemStats').value = JSON.stringify(data.stats, null, 2); document.getElementById('totemDesc').value = data.description; } }
             }
             else if (type === 'master' || type === 'druids') {
-                const table = type === 'master' ? 'runes_master' : 'runes_druids';
-                const res = await db.from(table).select('*').eq('id', id);
-                data = res.data[0];
-                if (data) {
-                    document.getElementById('name').value = data.name;
-                    document.getElementById('level').value = data.level;
-                    document.getElementById('icon_row').value = data.icon_row;
-                    document.getElementById('icon_col').value = data.icon_col;
-                    document.getElementById('iconPreview').innerHTML = `Текущая: ряд ${data.icon_row + 1}, колонка ${data.icon_col + 1}`;
-                    document.getElementById('description').value = data.description;
-                    const stats = data.stats || {};
-                    const statsList = ['точность', 'урон', 'блок', 'уворот', 'оглушение', 'броня', 'здоровье'];
-                    statsList.forEach(stat => {
-                        const input = document.querySelector(`.stat-val-${stat}`);
-                        if (input) input.value = stats[stat] || '';
-                    });
-                }
+                const prefix = type === 'master' ? 'master' : 'druid';
+                html = `<div class="form-group"><label>Название</label><input type="text" id="${prefix}Name"></div>
+                <div class="form-group"><label>Уровень</label><input type="number" id="${prefix}Level"></div>
+                <div class="form-group"><button class="cat-btn" onclick="openIconPicker('iconRow','iconCol','iconPreview')">🎨 Выбрать иконку</button><div id="iconPreview">Не выбрано</div><input type="hidden" id="iconRow" value="19"><input type="hidden" id="iconCol" value="4"></div>
+                <div class="form-group"><label>Характеристики (JSON)</label><textarea id="${prefix}Stats" rows="5"></textarea></div>
+                <div class="form-group"><label>Описание</label><textarea id="${prefix}Desc" rows="3"></textarea></div>`;
+                if (id) { const data = type === 'master' ? await getMasterRuneById(id) : await getDruidsRuneById(id); if (data) { document.getElementById(`${prefix}Name`).value = data.name; document.getElementById(`${prefix}Level`).value = data.level; document.getElementById('iconRow').value = data.icon_row; document.getElementById('iconCol').value = data.icon_col; document.getElementById('iconPreview').innerHTML = `Текущая: ряд ${data.icon_row + 1}, колонка ${data.icon_col + 1}`; document.getElementById(`${prefix}Stats`).value = JSON.stringify(data.stats, null, 2); document.getElementById(`${prefix}Desc`).value = data.description; } }
             }
             else if (type === 'news') {
-                const res = await db.from('news').select('*').eq('id', id);
-                data = res.data[0];
-                if (data) {
-                    document.getElementById('title').value = data.title;
-                    document.getElementById('content').value = data.content;
-                    document.getElementById('date').value = data.date;
-                }
+                html = `<div class="form-group"><label>Заголовок</label><input type="text" id="newsTitle"></div>
+                <div class="form-group"><label>Текст</label><textarea id="newsContent" rows="5"></textarea></div>
+                <div class="form-group"><label>Дата</label><input type="date" id="newsDate"></div>`;
+                if (id) { const data = await getNewsById(id); if (data) { document.getElementById('newsTitle').value = data.title; document.getElementById('newsContent').value = data.content; document.getElementById('newsDate').value = data.date; } }
             }
+            container.innerHTML = html;
+            document.getElementById('editModal').style.display = 'flex';
         }
 
-        function addUniqueField(value = '') {
-            const container = document.getElementById('uniqueContainer');
-            const div = document.createElement('div');
-            div.className = 'unique-field';
-            div.innerHTML = `<input type="text" class="unique-value" placeholder="Уникальная характеристика" value="${escapeHtml(value)}"><button onclick="this.parentElement.remove()">🗑️</button>`;
-            container.appendChild(div);
-        }
-
-        function collectStats(type) {
-            const stats = {};
-            if (type === 'items') {
-                const statsList = ['уровень', 'износ', 'количество', 'годность', 'точность', 'урон', 'блок', 'уворот', 'оглушение', 'броня', 'здоровье'];
-                statsList.forEach(stat => {
-                    const input = document.querySelector(`.stat-val-${stat}`);
-                    if (input && input.value.trim()) stats[stat] = input.value.trim();
-                });
-            } else {
-                const statsList = ['точность', 'урон', 'блок', 'уворот', 'оглушение', 'броня', 'здоровье'];
-                statsList.forEach(stat => {
-                    const input = document.querySelector(`.stat-val-${stat}`);
-                    if (input && input.value.trim()) stats[stat] = input.value.trim();
-                });
-            }
-            return stats;
-        }
-
-        function collectUniqueStats() {
-            const unique = [];
-            document.querySelectorAll('#uniqueContainer .unique-value').forEach(input => {
-                if (input.value.trim()) unique.push(input.value.trim());
-            });
-            return unique;
-        }
-
-        async function saveItem() {
-            const type = currentEditType;
+        // Сохранение
+        async function saveData() {
             let item = {};
-
-            if (type === 'items') {
+            if (currentType === 'items') {
                 item = {
-                    name: document.getElementById('name').value,
-                    type: document.getElementById('item_type').value,
-                    level: parseInt(document.getElementById('level').value),
+                    name: document.getElementById('itemName').value,
+                    type: document.getElementById('itemType').value,
+                    level: parseInt(document.getElementById('itemLevel').value),
                     icon: 'shop-icon',
-                    icon_row: parseInt(document.getElementById('icon_row').value),
-                    icon_col: parseInt(document.getElementById('icon_col').value),
-                    stats: collectStats('items'),
-                    unique_stats: collectUniqueStats(),
+                    icon_row: parseInt(document.getElementById('iconRow').value),
+                    icon_col: parseInt(document.getElementById('iconCol').value),
+                    stats: JSON.parse(document.getElementById('itemStats').value || '{}'),
+                    unique_stats: JSON.parse(document.getElementById('itemUnique').value || '[]'),
                     style: ''
                 };
-                if (currentEditId) item.id = currentEditId;
+                if (currentId) item.id = currentId;
                 await saveItem(item);
             }
-            else if (type === 'demons') {
+            else if (currentType === 'demons') {
                 item = {
-                    name: document.getElementById('name').value,
-                    level: parseInt(document.getElementById('level').value),
+                    name: document.getElementById('demonName').value,
+                    level: parseInt(document.getElementById('demonLevel').value),
                     icon: 'shop-icon',
-                    icon_row: parseInt(document.getElementById('icon_row').value),
-                    icon_col: parseInt(document.getElementById('icon_col').value),
-                    stats: collectStats('default'),
-                    description: document.getElementById('description').value
+                    icon_row: parseInt(document.getElementById('iconRow').value),
+                    icon_col: parseInt(document.getElementById('iconCol').value),
+                    stats: JSON.parse(document.getElementById('demonStats').value || '{}'),
+                    description: document.getElementById('demonDesc').value
                 };
-                if (currentEditId) item.id = currentEditId;
+                if (currentId) item.id = currentId;
                 await saveDemon(item);
             }
-            else if (type === 'totems') {
+            else if (currentType === 'totems') {
                 item = {
-                    name: document.getElementById('name').value,
-                    level: parseInt(document.getElementById('level').value),
-                    required_level: parseInt(document.getElementById('required_level').value),
+                    name: document.getElementById('totemName').value,
+                    level: parseInt(document.getElementById('totemLevel').value),
+                    required_level: parseInt(document.getElementById('totemRequired').value),
                     icon: 'shop-icon',
-                    icon_row: parseInt(document.getElementById('icon_row').value),
-                    icon_col: parseInt(document.getElementById('icon_col').value),
-                    stats: collectStats('default'),
-                    description: document.getElementById('description').value
+                    icon_row: parseInt(document.getElementById('iconRow').value),
+                    icon_col: parseInt(document.getElementById('iconCol').value),
+                    stats: JSON.parse(document.getElementById('totemStats').value || '{}'),
+                    description: document.getElementById('totemDesc').value
                 };
-                if (currentEditId) item.id = currentEditId;
+                if (currentId) item.id = currentId;
                 await saveTotem(item);
             }
-            else if (type === 'master') {
+            else if (currentType === 'master') {
                 item = {
-                    name: document.getElementById('name').value,
-                    level: parseInt(document.getElementById('level').value),
+                    name: document.getElementById('masterName').value,
+                    level: parseInt(document.getElementById('masterLevel').value),
                     icon: 'shop-icon',
-                    icon_row: parseInt(document.getElementById('icon_row').value),
-                    icon_col: parseInt(document.getElementById('icon_col').value),
-                    stats: collectStats('default'),
-                    description: document.getElementById('description').value
+                    icon_row: parseInt(document.getElementById('iconRow').value),
+                    icon_col: parseInt(document.getElementById('iconCol').value),
+                    stats: JSON.parse(document.getElementById('masterStats').value || '{}'),
+                    description: document.getElementById('masterDesc').value
                 };
-                if (currentEditId) item.id = currentEditId;
+                if (currentId) item.id = currentId;
                 await saveMasterRune(item);
             }
-            else if (type === 'druids') {
+            else if (currentType === 'druids') {
                 item = {
-                    name: document.getElementById('name').value,
-                    level: parseInt(document.getElementById('level').value),
+                    name: document.getElementById('druidName').value,
+                    level: parseInt(document.getElementById('druidLevel').value),
                     icon: 'shop-icon',
-                    icon_row: parseInt(document.getElementById('icon_row').value),
-                    icon_col: parseInt(document.getElementById('icon_col').value),
-                    stats: collectStats('default'),
-                    description: document.getElementById('description').value
+                    icon_row: parseInt(document.getElementById('iconRow').value),
+                    icon_col: parseInt(document.getElementById('iconCol').value),
+                    stats: JSON.parse(document.getElementById('druidStats').value || '{}'),
+                    description: document.getElementById('druidDesc').value
                 };
-                if (currentEditId) item.id = currentEditId;
+                if (currentId) item.id = currentId;
                 await saveDruidsRune(item);
             }
-            else if (type === 'news') {
+            else if (currentType === 'news') {
                 item = {
-                    title: document.getElementById('title').value,
-                    content: document.getElementById('content').value,
-                    date: document.getElementById('date').value
+                    title: document.getElementById('newsTitle').value,
+                    content: document.getElementById('newsContent').value,
+                    date: document.getElementById('newsDate').value
                 };
-                if (currentEditId) item.id = currentEditId;
+                if (currentId) item.id = currentId;
                 await saveNewsItem(item);
             }
             closeModal();
-            loadData(type);
+            loadTable(currentType);
             alert('✅ Сохранено!');
         }
 
-        function closeModal() { document.getElementById('editModal').style.display = 'none'; currentEditId = null; currentEditType = null; }
+        function closeModal() { document.getElementById('editModal').style.display = 'none'; currentId = null; }
 
-        loadData('items');
+        loadTable('items');
         document.addEventListener('DOMContentLoaded', displayAdminPanel);
     </script>
 </body>
