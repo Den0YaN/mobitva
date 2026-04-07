@@ -9,9 +9,10 @@ function getStatIconClass(statName) {
         'броня': 'stat-icon-броня', 
         'блок': 'stat-icon-блок', 
         'оглушение': 'stat-icon-оглушение', 
-        'здоровье': 'stat-icon-здоровье' 
+        'здоровье': 'stat-icon-здоровье',
+        'износ' : 'stat-icon-износ'
     }; 
-    return map[name] || ''; 
+    return 'stat-icon ' + (map[name] || 'stat-icon-износ');
 }
 function checkAuth() { const user = localStorage.getItem('user'); return user ? JSON.parse(user) : null; }
 function displayAdminPanel() { const user = checkAuth(); const ap = document.getElementById('adminPanel'); const up = document.getElementById('userPanel'); const ab = document.getElementById('addItemBtn'); if (!user) { if (ap) ap.style.display = 'none'; if (up) up.style.display = 'none'; if (ab) ab.style.display = 'none'; return; } if (user.role === 'admin') { if (ap) ap.style.display = 'block'; if (up) up.style.display = 'none'; if (ab) ab.style.display = 'block'; const n = document.getElementById('adminName'); if (n) n.textContent = user.name; } else { if (ap) ap.style.display = 'none'; if (up) up.style.display = 'block'; if (ab) ab.style.display = 'none'; const n = document.getElementById('userName'); if (n) n.textContent = user.name; } }
