@@ -104,7 +104,8 @@ body{font-family:Tahoma,Arial;background:#0d0a07;color:#e8dcc0;font-size:13px;pa
 .news-card-body{padding:20px;}
 .news-title{font-size:18px;font-weight:bold;color:#d4b35a;margin-bottom:15px;}
 .news-content{color:#e8dcc0;line-height:1.5;}
-
+.news-footer {margin-top: 12px;padding-top: 10px;border-top: 1px solid #c7ba00;font-size: 12px;color: #c7ba00;text-align: right;font-style: italic;}
+    
 /* ===== КОНТАКТЫ ===== */
 .contacts-container{max-width:600px;margin:0 auto;}
 .contacts-card{background:#1a1612;border:1px solid #c7ba00;border-radius:16px;overflow:hidden;margin-bottom:20px;}
