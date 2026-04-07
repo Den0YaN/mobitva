@@ -75,50 +75,120 @@
     <script src="js/db.js"></script>
     <script src="js/common.js"></script>
     <script>
-        const currentUser = checkAuth(); if (!currentUser) window.location.href = 'auth.html';
-        let demonCircles = {};
+const currentUser = checkAuth(); 
+if(!currentUser) window.location.href = 'auth.html';
 
-        // Функция для преобразования первой буквы в заглавную
-        function capitalizeFirst(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
+let demonCircles = {};
 
-        async function loadCircles() { const data = await getDemons(); demonCircles = {}; data.forEach(d => { demonCircles[d.id] = d; }); }
+function capitalizeFirst(str) { 
+    return str.charAt(0).toUpperCase() + str.slice(1); 
+}
 
-        async function renderCircles() {
-            await loadCircles();
-            const c = document.getElementById('circles-container');
-            if (!c) return;
-            let html = '';
-            for (const [id, circle] of Object.entries(demonCircles)) {
-                const statRows = Object.entries(circle.stats).map(([n, v]) => {
-                    const statName = capitalizeFirst(n);
-                    return `<div class="circle-stat-line"><div class="circle-stat-name"><span class="circle-stat-icon ${getStatIconClass(n)}"></span><span>${statName}:</span></div><div class="circle-stat-value">${v}</div></div>`;
-                }).join('');
-                html += `<div class="circle-card" onclick="openDemonModal('${id}')"><div class="circle-header"><div class="circle-icon shop-icon" style="--row:${circle.icon_row}; --col:${circle.icon_col};"></div><div class="circle-title"><div class="circle-name">${escapeHtml(circle.name)}</div><div class="circle-level">⭐ Уровень ${circle.level}</div></div></div><div class="circle-stats">${statRows}</div><div class="circle-description">${escapeHtml(circle.description)}</div></div>`;
-            }
-            c.innerHTML = html;
-        }
+async function loadCircles() { 
+    const data = await getDemons(); 
+    demonCircles = {}; 
+    data.forEach(d => { 
+        demonCircles[d.id] = d; 
+    }); 
+}
 
-        function openDemonModal(id) {
-            const circle = demonCircles[id];
-            if (!circle) return;
-            document.getElementById('modalIcon').style.backgroundPosition = `-${circle.icon_col * 80}px -${circle.icon_row * 80}px`;
-            document.getElementById('modalTitle').innerText = circle.name;
-            document.getElementById('modalSubtitle').innerHTML = `⭐ Уровень ${circle.level}`;
-            document.getElementById('modalDescription').innerHTML = circle.description;
-            const statsHtml = Object.entries(circle.stats).map(([n, v]) => {
-                const statName = capitalizeFirst(n);
-                return `<div class="demon-modal-stat-line"><div class="demon-modal-stat-name"><span class="circle-stat-icon ${getStatIconClass(n)}"></span><span>${statName}:</span></div><div class="demon-modal-stat-value">${v}</div></div>`;
-            }).join('');
-            document.getElementById('modalStats').innerHTML = statsHtml;
-            document.getElementById('demonModal').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
+function getStatIconClass(stat){
+    // нормализация (на всякий случай)
+    const s = stat.toLowerCase();
 
-        function closeDemonModal() { document.getElementById('demonModal').style.display = 'none'; document.body.style.overflow = ''; }
+    const map = {
+        'урон': 'stat-icon-урон',
+        'точность': 'stat-icon-точность',
+        'уворот': 'stat-icon-уворот',
+        'броня': 'stat-icon-броня',
+        'блок': 'stat-icon-блок',
+        'оглушение': 'stat-icon-оглушение',
+        'здоровье': 'stat-icon-здоровье',
+        'уровень': 'stat-icon-уровень'
+    };
 
-        renderCircles();
-        document.addEventListener('DOMContentLoaded', displayAdminPanel);
-    </script>
+    return 'stat-icon ' + (map[s] || '');
+}
+
+async function renderCircles() { 
+    await loadCircles(); 
+    const c = document.getElementById('circles-container'); 
+    if(!c) return; 
+
+    let html = ''; 
+
+    for(const [id, circle] of Object.entries(demonCircles)) { 
+
+        const statRows = Object.entries(circle.stats).map(([n, v]) => {
+            const statName = capitalizeFirst(n);
+            const iconClass = getStatIconClass(n);
+
+            return `
+            <div class="circle-stat-line">
+                <div class="circle-stat-name">
+                    <span class="${iconClass}"></span>
+                    <span>${statName}:</span>
+                </div>
+                <div class="circle-stat-value">${v}</div>
+            </div>`;
+        }).join(''); 
+
+        html += `
+        <div class="circle-card" onclick="openDemonModal('${id}')">
+            <div class="circle-header">
+                <div class="circle-icon shop-icon" style="--row:${circle.icon_row}; --col:${circle.icon_col};"></div>
+                <div class="circle-title">
+                    <div class="circle-name">${escapeHtml(circle.name)}</div>
+                    <div class="circle-level">⭐ Уровень ${circle.level}</div>
+                </div>
+            </div>
+
+            <div class="circle-stats">${statRows}</div>
+            <div class="circle-description">${escapeHtml(circle.description)}</div>
+        </div>`; 
+    } 
+
+    c.innerHTML = html; 
+}
+
+function openDemonModal(id) { 
+    const circle = demonCircles[id]; 
+    if(!circle) return; 
+
+    document.getElementById('modalIcon').style.backgroundPosition = 
+        `-${circle.icon_col * 80}px -${circle.icon_row * 80}px`; 
+
+    document.getElementById('modalTitle').innerText = circle.name; 
+    document.getElementById('modalSubtitle').innerHTML = `⭐ Уровень ${circle.level}`; 
+    document.getElementById('modalDescription').innerHTML = circle.description; 
+
+    const statsHtml = Object.entries(circle.stats).map(([n, v]) => {
+        const statName = capitalizeFirst(n);
+        const iconClass = getStatIconClass(n);
+
+        return `
+        <div class="demon-modal-stat-line">
+            <div class="demon-modal-stat-name">
+                <span class="${iconClass}"></span>
+                <span>${statName}:</span>
+            </div>
+            <div class="demon-modal-stat-value">${v}</div>
+        </div>`;
+    }).join(''); 
+
+    document.getElementById('modalStats').innerHTML = statsHtml; 
+    document.getElementById('demonModal').style.display = 'flex'; 
+    document.body.style.overflow = 'hidden'; 
+}
+
+function closeDemonModal() { 
+    document.getElementById('demonModal').style.display = 'none'; 
+    document.body.style.overflow = ''; 
+}
+
+renderCircles(); 
+document.addEventListener('DOMContentLoaded', displayAdminPanel);
+</script>
 </body>
 
 </html>
