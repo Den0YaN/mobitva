@@ -1,3 +1,15 @@
+
+// порядок отображения характеристик
+const STAT_ORDER = [
+    'точность',
+    'урон',
+    'блок',
+    'оглушение',
+    'уворот',
+    'броня',
+    'здоровье'
+];
+
 function createStatElement(statName, statValue) {
     const statLine = document.createElement('div');
     statLine.classList.add('circle-stat-line');
@@ -29,3 +41,17 @@ function createStatElement(statName, statValue) {
 
     return statLine;
 }
+
+
+function renderStats(statsObj, container) {
+
+    container.innerHTML = '';
+
+    STAT_ORDER.forEach(stat => {
+        if (statsObj[stat] !== undefined && statsObj[stat] !== null) {
+            const statEl = createStatElement(stat, statsObj[stat]);
+            container.appendChild(statEl);
+        }
+    });
+}
+
