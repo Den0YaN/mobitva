@@ -1,25 +1,17 @@
-
-// порядок отображения характеристик
-const STAT_ORDER = [
-    'точность',
-    'урон',
-    'блок',
-    'оглушение',
-    'уворот',
-    'броня',
-    'здоровье'
-];
-
 function createStatElement(statName, statValue) {
     const statLine = document.createElement('div');
-    statLine.classList.add('circle-stat-line'); // можно reuse классы для всех блоков
+    statLine.classList.add('circle-stat-line');
 
     const statLabel = document.createElement('span');
-    statLabel.textContent = getRussianStyleText(statName); // "Урон", "Броня" и т.д.
+    statLabel.textContent = getRussianStyleText(statName);
 
     const statIcon = document.createElement('i');
-    const iconClass = getStatIconClass(statName);
-    if (iconClass) statIcon.classList.add('stat-icon', iconClass);
+    let iconClass = getStatIconClass(statName);
+    if (iconClass) {
+        // разбиваем по пробелам и добавляем каждый токен отдельно
+        iconClass.split(/\s+/).forEach(cls => statIcon.classList.add(cls));
+        statIcon.classList.add('stat-icon'); // добавляем общий класс
+    }
 
     const statValueEl = document.createElement('span');
     statValueEl.textContent = statValue;
@@ -37,17 +29,3 @@ function createStatElement(statName, statValue) {
 
     return statLine;
 }
-
-
-function renderStats(statsObj, container) {
-
-    container.innerHTML = '';
-
-    STAT_ORDER.forEach(stat => {
-        if (statsObj[stat] !== undefined && statsObj[stat] !== null) {
-            const statEl = createStatElement(stat, statsObj[stat]);
-            container.appendChild(statEl);
-        }
-    });
-}
-
