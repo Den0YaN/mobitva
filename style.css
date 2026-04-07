@@ -63,7 +63,7 @@ body{font-family:Tahoma,Arial;background:#0d0a07;color:#e8dcc0;font-size:13px;pa
 .rune-modal-title,
 .rune-modal-subtitle,
 .circle-stat-line span {
-    text-transform: uppercase; /* или capitalize */
+    text-transform: capitalize; /* или uppercase */
 }
 /* ===== МОДАЛЬНЫЕ ОКНА ПРОСМОТРА ===== */
 .demon-modal,.rune-modal,.totem-modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.85);justify-content:center;align-items:center;}
