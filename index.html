@@ -4,7 +4,7 @@
 <body>
 <div class="wrapper">
     <div id="adminPanel" style="display:none;"><div class="admin-panel"><div class="admin-info"><div class="admin-avatar">👑</div><div><div class="admin-name" id="adminName"></div><div class="admin-role">Администратор</div></div><div class="admin-badge">ADMIN</div></div><div class="admin-actions"><button class="admin-btn" onclick="openAdminPanel()">⚙️ Управление</button><button class="admin-btn logout-btn" onclick="logout()">🚪 Выйти</button></div></div></div>
-    <div id="userPanel" style="display:none;"><div class="admin-panel"><div class="admin-info"><div class="admin-avatar">👤</div><div><div class="admin-name" id="userName"></div><div class="admin-role">Пользователь</div></div></div><div class="admin-actions"><button class="admin-btn logout-btn" onclick="logout()">🚪 Выйти</button></div></div></div>
+    <div id="userPanelf" style="display:none;"><div class="admin-panel"><div class="admin-info"><div class="admin-avatar">👤</div><div><div class="admin-name" id="userName"></div><div class="admin-role">Пользователь</div></div></div><div class="admin-actions"><button class="admin-btn logout-btn" onclick="logout()">🚪 Выйти</button></div></div></div>
     <div class="header-wrapper"><a href="https://mobitva.net" target="_blank">mobitva.net</a><div class="site-title">⚔️ ГЛАВНОЕ МЕНЮ ⚔️</div><a href="https://mmobitva.ru" target="_blank">mmobitva.ru</a></div>
     <div class="button-grid">
         <button class="main-btn" onclick="location.href='main.html'">📦 Предметы<span>Просмотр и поиск</span></button>
@@ -33,7 +33,14 @@ async function loadLatestNews() {
     if(!c) return;
     if(latest.length === 0) { c.innerHTML = '<div>📭 Новостей пока нет</div>'; return; }
     let html = '';
-    latest.forEach(i => { html += `<div style="margin-bottom:15px;"><span style="font-size:11px;color:#c7ba00;">${new Date(i.date).toLocaleDateString('ru-RU')}</span><div style="font-weight:bold;color:#d4b35a;margin:5px 0;">${escapeHtml(i.title)}</div><div style="font-size:12px;color:#a0a0a0;">${escapeHtml(i.content.substring(0,500))}${i.content.length>300?'...':''}</div></div>`; });
+    latest.forEach(i => {
+        html += `<div style="margin-bottom:15px;">
+                    <span style="font-size:11px;color:#c7ba00;">${new Date(i.date).toLocaleDateString('ru-RU')}</span>
+                    <div style="font-weight:bold;color:#d4b35a;margin:5px 0;">${escapeHtml(i.title)}</div>
+                    <div style="font-size:12px;color:#a0a0a0;">${escapeHtml(i.content.substring(0,150))}${i.content.length>150?'...':''}</div>
+                    ${i.footer ? `<div style="font-size:11px;color:#c7ba00;margin-top:5px;">${escapeHtml(i.footer)}</div>` : ''}
+                </div>`;
+    });
     c.innerHTML = html;
 }
 document.addEventListener('DOMContentLoaded', function() { loadLatestNews(); displayAdminPanel(); });
