@@ -140,34 +140,48 @@
             margin-top: 10px;
         }
 
-        .stats-editor-grid {
+        .stats-grid-editor {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
             margin-bottom: 20px;
         }
 
-        .stat-editor-field {
+        .stat-field {
             background: #0d0a07;
             border: 1px solid #c7ba00;
             border-radius: 8px;
             padding: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .stat-editor-field label {
+        .stat-field label {
             font-size: 11px;
             color: #c7ba00;
-            display: block;
-            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            min-width: 70px;
         }
 
-        .stat-editor-field input {
-            width: 100%;
+        .stat-field input {
+            flex: 1;
             background: #1a1612;
             border: 1px solid #4a3f32;
             border-radius: 6px;
             padding: 6px;
-            margin: 0;
+            color: #e8dcc0;
+        }
+
+        .stat-field .stat-icon {
+            width: 24px;
+            height: 24px;
+            background-image: url('img/icons.png');
+            background-repeat: no-repeat;
+            background-size: auto 24px;
+            display: inline-block;
         }
 
         .icon-grid-admin {
@@ -195,6 +209,31 @@
 
         .icon-cell-admin:hover {
             border-color: #ffaa44;
+        }
+
+        .unique-field {
+            background: #0d0a07;
+            border: 1px solid #c7ba00;
+            border-radius: 8px;
+            padding: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .unique-field input {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .unique-field button {
+            background: #ff4444;
+            border: none;
+            border-radius: 6px;
+            padding: 4px 10px;
+            color: white;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -260,7 +299,7 @@
                     </tr>
                 </thead>
                 <tbody id="totemsList"></tbody>
-            </table>
+                </td>
         </div>
         <div id="masterPanel" class="admin-panel-content"><button class="add-btn" onclick="openAddModal('master')">➕
                 Добавить руну</button>
@@ -274,7 +313,7 @@
                     </tr>
                 </thead>
                 <tbody id="masterList"></tbody>
-                </tr>
+            </table>
         </div>
         <div id="druidsPanel" class="admin-panel-content"><button class="add-btn" onclick="openAddModal('druids')">➕
                 Добавить руну</button>
@@ -288,7 +327,7 @@
                     </tr>
                 </thead>
                 <tbody id="druidsList"></tbody>
-            </table>
+                </tr>
         </div>
         <div id="newsPanel" class="admin-panel-content"><button class="add-btn" onclick="openAddModal('news')">➕
                 Добавить новость</button>
@@ -360,7 +399,7 @@
             if (type === 'users') renderUsers(await getUsers());
         }
 
-        // Рендеры
+        // Рендеры таблиц
         function renderItems(data) { const tbody = document.getElementById('itemsList'); if (!tbody) return; let html = ''; for (const item of data) html += `<tr><td>${item.id}</td><td>${escapeHtml(item.name)}</td><td>${item.type}</td><td>${item.level}</td><td><button class="edit-item-btn" onclick="openEditModal('items',${item.id})">✏️</button><button class="delete-item-btn" onclick="deleteItem('items',${item.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
         function renderDemons(data) { const tbody = document.getElementById('demonsList'); if (!tbody) return; let html = ''; for (const d of data) html += `<tr><td>${d.id}</td><td>${escapeHtml(d.name)}</td><td>${d.level}</td><td><button class="edit-item-btn" onclick="openEditModal('demons',${d.id})">✏️</button><button class="delete-item-btn" onclick="deleteItem('demons',${d.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
         function renderTotems(data) { const tbody = document.getElementById('totemsList'); if (!tbody) return; let html = ''; for (const t of data) html += `<tr><td>${t.id}</td><td>${escapeHtml(t.name)}</td><td>${t.level}</td><td>${t.required_level}</td><td><button class="edit-item-btn" onclick="openEditModal('totems',${t.id})">✏️</button><button class="delete-item-btn" onclick="deleteItem('totems',${t.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
@@ -411,66 +450,111 @@
         function showModalFields(type, id) {
             const container = document.getElementById('modalFields');
             let html = '';
+
             if (type === 'items') {
-                html = `<input type="text" id="name" placeholder="Название"><input type="text" id="item_type" placeholder="Тип"><input type="number" id="level" placeholder="Уровень"><input type="number" id="icon_row" placeholder="Ряд иконки"><input type="number" id="icon_col" placeholder="Колонка иконки"><textarea id="stats" placeholder="Характеристики (JSON)"></textarea>`;
-                if (id) loadDataToForm('items', id);
+                html = `
+            <input type="text" id="name" placeholder="Название" value="">
+            <input type="text" id="item_type" placeholder="Тип" value="">
+            <input type="number" id="level" placeholder="Уровень" value="">
+            <button class="cat-btn" onclick="openIconPickerAdmin('icon_row','icon_col','iconPreview')">🎨 Выбрать иконку</button>
+            <div id="iconPreview">Не выбрано</div>
+            <input type="hidden" id="icon_row" value="19">
+            <input type="hidden" id="icon_col" value="4">
+            <div class="stats-grid-editor" id="statsEditor"></div>
+            <div id="uniqueContainer"></div>
+            <button class="add-stat-btn" onclick="addUniqueField()">➕ Добавить уникальную характеристику</button>
+        `;
+                if (id) loadDataToForm('items', id); else initEmptyItemStats();
             }
-            else if (type === 'demons') {
-                html = `<input type="text" id="name" placeholder="Название"><input type="number" id="level" placeholder="Уровень"><button class="cat-btn" onclick="openIconPickerAdmin('icon_row','icon_col','iconPreview')">🎨 Выбрать иконку</button><div id="iconPreview">Не выбрано</div><input type="hidden" id="icon_row"><input type="hidden" id="icon_col"><div class="stats-editor-grid" id="statsEditor"></div><textarea id="description" placeholder="Описание" rows="4"></textarea>`;
-                if (id) loadDataToForm('demons', id); else initEmptyStatsEditor();
-            }
-            else if (type === 'totems') {
-                html = `<input type="text" id="name" placeholder="Название"><input type="number" id="level" placeholder="Уровень"><input type="number" id="required_level" placeholder="Требуемый уровень"><button class="cat-btn" onclick="openIconPickerAdmin('icon_row','icon_col','iconPreview')">🎨 Выбрать иконку</button><div id="iconPreview">Не выбрано</div><input type="hidden" id="icon_row"><input type="hidden" id="icon_col"><div class="stats-editor-grid" id="statsEditor"></div><textarea id="description" placeholder="Описание" rows="4"></textarea>`;
-                if (id) loadDataToForm('totems', id); else initEmptyStatsEditor();
-            }
-            else if (type === 'master' || type === 'druids') {
-                html = `<input type="text" id="name" placeholder="Название"><input type="number" id="level" placeholder="Уровень"><button class="cat-btn" onclick="openIconPickerAdmin('icon_row','icon_col','iconPreview')">🎨 Выбрать иконку</button><div id="iconPreview">Не выбрано</div><input type="hidden" id="icon_row"><input type="hidden" id="icon_col"><div class="stats-editor-grid" id="statsEditor"></div><textarea id="description" placeholder="Описание" rows="4"></textarea>`;
-                if (id) loadDataToForm(type === 'master' ? 'master' : 'druids', id); else initEmptyStatsEditor();
+            else if (type === 'demons' || type === 'totems' || type === 'master' || type === 'druids') {
+                let extraFields = '';
+                if (type === 'totems') extraFields = `<input type="number" id="required_level" placeholder="Требуемый уровень" value="">`;
+                html = `
+            <input type="text" id="name" placeholder="Название" value="">
+            <input type="number" id="level" placeholder="Уровень" value="">
+            ${extraFields}
+            <button class="cat-btn" onclick="openIconPickerAdmin('icon_row','icon_col','iconPreview')">🎨 Выбрать иконку</button>
+            <div id="iconPreview">Не выбрано</div>
+            <input type="hidden" id="icon_row" value="19">
+            <input type="hidden" id="icon_col" value="4">
+            <div class="stats-grid-editor" id="statsEditor"></div>
+            <textarea id="description" placeholder="Описание" rows="4"></textarea>
+        `;
+                if (id) loadDataToForm(type, id); else initEmptyStats();
             }
             else if (type === 'news') {
-                html = `<input type="text" id="title" placeholder="Заголовок"><textarea id="content" placeholder="Текст"></textarea><input type="date" id="date" placeholder="Дата">`;
+                html = `
+            <input type="text" id="title" placeholder="Заголовок" value="">
+            <textarea id="content" placeholder="Текст" rows="4"></textarea>
+            <input type="date" id="date" placeholder="Дата" value="">
+        `;
                 if (id) loadDataToForm('news', id);
             }
             container.innerHTML = html;
         }
 
-        function initEmptyStatsEditor() {
+        // Инициализация пустых полей характеристик для предметов
+        function initEmptyItemStats() {
             const container = document.getElementById('statsEditor');
-            const statsList = ['Точность', 'Урон', 'Блок', 'Оглушение', 'Уворот', 'Броня', 'Здоровье'];
+            const stats = ['уровень', 'износ', 'количество', 'годность', 'точность', 'урон', 'блок', 'уворот', 'оглушение', 'броня', 'здоровье'];
+            const icons = {
+                'уровень': 'stat-icon-уровень', 'износ': 'stat-icon-износ', 'количество': 'stat-icon-количество', 'годность': 'stat-icon-годность',
+                'точность': 'stat-icon-точность', 'урон': 'stat-icon-урон', 'блок': 'stat-icon-блок', 'уворот': 'stat-icon-уворот',
+                'оглушение': 'stat-icon-оглушение', 'броня': 'stat-icon-броня', 'здоровье': 'stat-icon-здоровье'
+            };
             container.innerHTML = '';
-            statsList.forEach(stat => {
+            stats.forEach(stat => {
                 const div = document.createElement('div');
-                div.className = 'stat-editor-field';
-                div.innerHTML = `<label>${stat}</label><input type="text" class="stat-value-${stat.toLowerCase()}" placeholder="Значение">`;
+                div.className = 'stat-field';
+                div.innerHTML = `<label><span class="stat-icon ${icons[stat]}"></span> ${stat.charAt(0).toUpperCase() + stat.slice(1)}:</label><input type="text" class="stat-val-${stat}" placeholder="Значение">`;
+                container.appendChild(div);
+            });
+            document.getElementById('uniqueContainer').innerHTML = '';
+        }
+
+        // Инициализация пустых полей характеристик для демонов/тотемов/рун
+        function initEmptyStats() {
+            const container = document.getElementById('statsEditor');
+            const stats = ['точность', 'урон', 'блок', 'уворот', 'оглушение', 'броня', 'здоровье'];
+            const icons = {
+                'точность': 'stat-icon-точность', 'урон': 'stat-icon-урон', 'блок': 'stat-icon-блок', 'уворот': 'stat-icon-уворот',
+                'оглушение': 'stat-icon-оглушение', 'броня': 'stat-icon-броня', 'здоровье': 'stat-icon-здоровье'
+            };
+            container.innerHTML = '';
+            stats.forEach(stat => {
+                const div = document.createElement('div');
+                div.className = 'stat-field';
+                div.innerHTML = `<label><span class="stat-icon ${icons[stat]}"></span> ${stat.charAt(0).toUpperCase() + stat.slice(1)}:</label><input type="text" class="stat-val-${stat}" placeholder="Значение">`;
                 container.appendChild(div);
             });
         }
 
-        function fillStatsEditor(stats) {
-            const container = document.getElementById('statsEditor');
-            if (!container) return;
-            const statFields = { точность: 'Точность', урон: 'Урон', блок: 'Блок', оглушение: 'Оглушение', уворот: 'Уворот', броня: 'Броня', здоровье: 'Здоровье' };
-            for (const [key, label] of Object.entries(statFields)) {
-                const input = container.querySelector(`.stat-value-${key}`);
-                if (input) input.value = stats[key] || '+0';
-            }
-        }
-
-        function collectStatsFromEditor() {
-            const stats = {};
-            const container = document.getElementById('statsEditor');
-            if (!container) return stats;
-            const statKeys = { 'Точность': 'точность', 'Урон': 'урон', 'Блок': 'блок', 'Оглушение': 'оглушение', 'Уворот': 'уворот', 'Броня': 'броня', 'Здоровье': 'здоровье' };
-            for (const [label, key] of Object.entries(statKeys)) {
-                const input = container.querySelector(`.stat-value-${key}`);
-                if (input && input.value.trim()) stats[key] = input.value.trim();
-            }
-            return stats;
-        }
-
+        // Заполнение формы при редактировании
         async function loadDataToForm(type, id) {
             let data;
-            if (type === 'demons') {
+            if (type === 'items') {
+                const res = await db.from('items').select('*').eq('id', id);
+                data = res.data[0];
+                if (data) {
+                    document.getElementById('name').value = data.name;
+                    document.getElementById('item_type').value = data.type;
+                    document.getElementById('level').value = data.level;
+                    document.getElementById('icon_row').value = data.icon_row;
+                    document.getElementById('icon_col').value = data.icon_col;
+                    document.getElementById('iconPreview').innerHTML = `Текущая: ряд ${data.icon_row + 1}, колонка ${data.icon_col + 1}`;
+                    const stats = data.stats || {};
+                    const statsList = ['уровень', 'износ', 'количество', 'годность', 'точность', 'урон', 'блок', 'уворот', 'оглушение', 'броня', 'здоровье'];
+                    statsList.forEach(stat => {
+                        const input = document.querySelector(`.stat-val-${stat}`);
+                        if (input) input.value = stats[stat] || '';
+                    });
+                    const uniqueContainer = document.getElementById('uniqueContainer');
+                    uniqueContainer.innerHTML = '';
+                    const uniqueStats = data.unique_stats || [];
+                    uniqueStats.forEach(stat => addUniqueField(stat));
+                }
+            }
+            else if (type === 'demons') {
                 const res = await db.from('demons').select('*').eq('id', id);
                 data = res.data[0];
                 if (data) {
@@ -480,7 +564,12 @@
                     document.getElementById('icon_col').value = data.icon_col;
                     document.getElementById('iconPreview').innerHTML = `Текущая: ряд ${data.icon_row + 1}, колонка ${data.icon_col + 1}`;
                     document.getElementById('description').value = data.description;
-                    fillStatsEditor(data.stats);
+                    const stats = data.stats || {};
+                    const statsList = ['точность', 'урон', 'блок', 'уворот', 'оглушение', 'броня', 'здоровье'];
+                    statsList.forEach(stat => {
+                        const input = document.querySelector(`.stat-val-${stat}`);
+                        if (input) input.value = stats[stat] || '';
+                    });
                 }
             }
             else if (type === 'totems') {
@@ -494,11 +583,17 @@
                     document.getElementById('icon_col').value = data.icon_col;
                     document.getElementById('iconPreview').innerHTML = `Текущая: ряд ${data.icon_row + 1}, колонка ${data.icon_col + 1}`;
                     document.getElementById('description').value = data.description;
-                    fillStatsEditor(data.stats);
+                    const stats = data.stats || {};
+                    const statsList = ['точность', 'урон', 'блок', 'уворот', 'оглушение', 'броня', 'здоровье'];
+                    statsList.forEach(stat => {
+                        const input = document.querySelector(`.stat-val-${stat}`);
+                        if (input) input.value = stats[stat] || '';
+                    });
                 }
             }
-            else if (type === 'master') {
-                const res = await db.from('runes_master').select('*').eq('id', id);
+            else if (type === 'master' || type === 'druids') {
+                const table = type === 'master' ? 'runes_master' : 'runes_druids';
+                const res = await db.from(table).select('*').eq('id', id);
                 data = res.data[0];
                 if (data) {
                     document.getElementById('name').value = data.name;
@@ -507,20 +602,12 @@
                     document.getElementById('icon_col').value = data.icon_col;
                     document.getElementById('iconPreview').innerHTML = `Текущая: ряд ${data.icon_row + 1}, колонка ${data.icon_col + 1}`;
                     document.getElementById('description').value = data.description;
-                    fillStatsEditor(data.stats);
-                }
-            }
-            else if (type === 'druids') {
-                const res = await db.from('runes_druids').select('*').eq('id', id);
-                data = res.data[0];
-                if (data) {
-                    document.getElementById('name').value = data.name;
-                    document.getElementById('level').value = data.level;
-                    document.getElementById('icon_row').value = data.icon_row;
-                    document.getElementById('icon_col').value = data.icon_col;
-                    document.getElementById('iconPreview').innerHTML = `Текущая: ряд ${data.icon_row + 1}, колонка ${data.icon_col + 1}`;
-                    document.getElementById('description').value = data.description;
-                    fillStatsEditor(data.stats);
+                    const stats = data.stats || {};
+                    const statsList = ['точность', 'урон', 'блок', 'уворот', 'оглушение', 'броня', 'здоровье'];
+                    statsList.forEach(stat => {
+                        const input = document.querySelector(`.stat-val-${stat}`);
+                        if (input) input.value = stats[stat] || '';
+                    });
                 }
             }
             else if (type === 'news') {
@@ -534,17 +621,67 @@
             }
         }
 
+        function addUniqueField(value = '') {
+            const container = document.getElementById('uniqueContainer');
+            const div = document.createElement('div');
+            div.className = 'unique-field';
+            div.innerHTML = `<input type="text" class="unique-value" placeholder="Уникальная характеристика" value="${escapeHtml(value)}"><button onclick="this.parentElement.remove()">🗑️</button>`;
+            container.appendChild(div);
+        }
+
+        function collectStats(type) {
+            const stats = {};
+            if (type === 'items') {
+                const statsList = ['уровень', 'износ', 'количество', 'годность', 'точность', 'урон', 'блок', 'уворот', 'оглушение', 'броня', 'здоровье'];
+                statsList.forEach(stat => {
+                    const input = document.querySelector(`.stat-val-${stat}`);
+                    if (input && input.value.trim()) stats[stat] = input.value.trim();
+                });
+            } else {
+                const statsList = ['точность', 'урон', 'блок', 'уворот', 'оглушение', 'броня', 'здоровье'];
+                statsList.forEach(stat => {
+                    const input = document.querySelector(`.stat-val-${stat}`);
+                    if (input && input.value.trim()) stats[stat] = input.value.trim();
+                });
+            }
+            return stats;
+        }
+
+        function collectUniqueStats() {
+            const unique = [];
+            document.querySelectorAll('#uniqueContainer .unique-value').forEach(input => {
+                if (input.value.trim()) unique.push(input.value.trim());
+            });
+            return unique;
+        }
+
         async function saveItem() {
             const type = currentEditType;
             let item = {};
-            if (type === 'demons') {
+
+            if (type === 'items') {
+                item = {
+                    name: document.getElementById('name').value,
+                    type: document.getElementById('item_type').value,
+                    level: parseInt(document.getElementById('level').value),
+                    icon: 'shop-icon',
+                    icon_row: parseInt(document.getElementById('icon_row').value),
+                    icon_col: parseInt(document.getElementById('icon_col').value),
+                    stats: collectStats('items'),
+                    unique_stats: collectUniqueStats(),
+                    style: ''
+                };
+                if (currentEditId) item.id = currentEditId;
+                await saveItem(item);
+            }
+            else if (type === 'demons') {
                 item = {
                     name: document.getElementById('name').value,
                     level: parseInt(document.getElementById('level').value),
                     icon: 'shop-icon',
                     icon_row: parseInt(document.getElementById('icon_row').value),
                     icon_col: parseInt(document.getElementById('icon_col').value),
-                    stats: collectStatsFromEditor(),
+                    stats: collectStats('default'),
                     description: document.getElementById('description').value
                 };
                 if (currentEditId) item.id = currentEditId;
@@ -558,7 +695,7 @@
                     icon: 'shop-icon',
                     icon_row: parseInt(document.getElementById('icon_row').value),
                     icon_col: parseInt(document.getElementById('icon_col').value),
-                    stats: collectStatsFromEditor(),
+                    stats: collectStats('default'),
                     description: document.getElementById('description').value
                 };
                 if (currentEditId) item.id = currentEditId;
@@ -571,7 +708,7 @@
                     icon: 'shop-icon',
                     icon_row: parseInt(document.getElementById('icon_row').value),
                     icon_col: parseInt(document.getElementById('icon_col').value),
-                    stats: collectStatsFromEditor(),
+                    stats: collectStats('default'),
                     description: document.getElementById('description').value
                 };
                 if (currentEditId) item.id = currentEditId;
@@ -584,7 +721,7 @@
                     icon: 'shop-icon',
                     icon_row: parseInt(document.getElementById('icon_row').value),
                     icon_col: parseInt(document.getElementById('icon_col').value),
-                    stats: collectStatsFromEditor(),
+                    stats: collectStats('default'),
                     description: document.getElementById('description').value
                 };
                 if (currentEditId) item.id = currentEditId;
