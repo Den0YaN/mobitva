@@ -50,7 +50,9 @@
             <div class="totem-modal-header">
                 <div class="totem-modal-close" onclick="closeTotemModal()">✕</div>
                 <div class="totem-modal-icon">
-                    <div class="item-icon" id="modalIcon"></div>
+                    <div class="item-icon shop-icon" id="modalIcon"
+                        style="width:80px;height:80px;background-image:url('img/shop.png');background-repeat:no-repeat;">
+                    </div>
                 </div>
                 <div class="totem-modal-title" id="modalTitle"></div>
                 <div class="totem-modal-subtitle" id="modalSubtitle"></div>
@@ -70,52 +72,11 @@
     <script src="js/db.js"></script>
     <script src="js/common.js"></script>
     <script>
-        if (!checkAuth()) { window.location.href = 'auth.html'; }
-        async function renderTotems() {
-            const totems = await getTotems();
-            const container = document.getElementById('totems-container');
-            if (!container) return;
-            let html = '';
-            for (const t of totems) {
-                const statsHtml = Object.entries(t.stats).map(([n, v]) => `<div class="totem-stat-line"><div class="totem-stat-name"><span class="totem-stat-icon ${getStatIconClass(n)}"></span><span>${n}:</span></div><div class="totem-stat-value">${v}</div></div>`).join('');
-                html += `<div class="totem-card" onclick="openTotemModal(${t.id})">
-                    <div class="totem-header">
-                        <div class="totem-icon shop-icon" style="--row:${t.icon_row}; --col:${t.icon_col};"></div>
-                        <div class="totem-title">
-                            <div class="totem-name">${escapeHtml(t.name)}</div>
-                            <div class="totem-required">⭐ Требуется ${t.required_level}+ уровень</div>
-                        </div>
-                    </div>
-                    <div class="totem-stats">${statsHtml}</div>
-                    <div class="totem-description">${escapeHtml(t.description)}</div>
-                </div>`;
-            }
-            container.innerHTML = html;
-        }
-        function openTotemModal(id) {
-            const totem = totems.find(t => t.id === id);
-            if(!totem) return;
-            
-            document.getElementById('modalIcon').className = `item-icon ${totem.icon}`;
-            document.getElementById('modalTitle').innerText = totem.name;
-            document.getElementById('modalSubtitle').innerHTML = `📊 Уровень ${totem.level} | ⭐ Требуется ${totem.required_level}+ уровень`;
-            document.getElementById('modalDescription').innerHTML = totem.description;
-            
-            const statsHtml = Object.entries(totem.stats).map(([name, value]) => {
-                const iconClass = getStatIconClass(name);
-                return `<div class="totem-modal-stat-line">
-                            <div class="totem-modal-stat-name">
-                                <span class="totem-stat-icon ${iconClass}"></span>
-                                <span>${name}:</span>
-                            </div>
-                            <div class="totem-modal-stat-value">${value}</div>
-                        </div>`;
-            }).join('');
-            
-            document.getElementById('modalStats').innerHTML = statsHtml;
-            document.getElementById('totemModal').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
+        const currentUser = checkAuth(); if (!currentUser) window.location.href = 'auth.html';
+        let totems = {};
+        async function loadTotems() { const data = await getTotems(); totems = {}; data.forEach(t => { totems[t.id] = t; }); }
+        async function renderTotems() { await loadTotems(); const c = document.getElementById('totems-container'); if (!c) return; let html = ''; for (const [id, t] of Object.entries(totems)) { const statRows = Object.entries(t.stats).map(([n, v]) => `<div class="totem-stat-line"><div class="totem-stat-name"><span class="totem-stat-icon ${getStatIconClass(n)}"></span><span>${n}:</span></div><div class="totem-stat-value">${v}</div></div>`).join(''); html += `<div class="totem-card" onclick="openTotemModal('${id}')"><div class="totem-header"><div class="totem-icon shop-icon" style="--row:${t.icon_row}; --col:${t.icon_col};"></div><div class="totem-title"><div class="totem-name">${escapeHtml(t.name)}</div><div class="totem-required">⭐ Требуется ${t.required_level}+ уровень</div></div></div><div class="totem-stats">${statRows}</div><div class="totem-description">${escapeHtml(t.description)}</div></div>`; } c.innerHTML = html; }
+        function openTotemModal(id) { const t = totems[id]; if (!t) return; document.getElementById('modalIcon').style.backgroundPosition = `-${t.icon_col * 80}px -${t.icon_row * 80}px`; document.getElementById('modalTitle').innerText = t.name; document.getElementById('modalSubtitle').innerHTML = `📊 Уровень ${t.level} | ⭐ Требуется ${t.required_level}+`; document.getElementById('modalDescription').innerHTML = t.description; const statsHtml = Object.entries(t.stats).map(([n, v]) => `<div class="totem-modal-stat-line"><div class="totem-modal-stat-name"><span class="totem-stat-icon ${getStatIconClass(n)}"></span><span>${n}:</span></div><div class="totem-modal-stat-value">${v}</div></div>`).join(''); document.getElementById('modalStats').innerHTML = statsHtml; document.getElementById('totemModal').style.display = 'flex'; document.body.style.overflow = 'hidden'; }
         function closeTotemModal() { document.getElementById('totemModal').style.display = 'none'; document.body.style.overflow = ''; }
         renderTotems(); document.addEventListener('DOMContentLoaded', displayAdminPanel);
     </script>
