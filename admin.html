@@ -248,7 +248,25 @@
         function renderTotems(data) { const tbody = document.getElementById('totemsList'); if (!tbody) return; let html = ''; for (const d of data) html += `<tr><td>${d.id}</td><td>${escapeHtml(d.name)}</td><td>${d.level}</td><td>${d.required_level}</td><td><button class="edit-btn" onclick="openModal('totems',${d.id})">✏️</button><button class="delete-btn" onclick="deleteRow('totems',${d.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
         function renderMaster(data) { const tbody = document.getElementById('masterList'); if (!tbody) return; let html = ''; for (const d of data) html += `<tr><td>${d.id}</td><td>${escapeHtml(d.name)}</td><td>${d.level}</td><td><button class="edit-btn" onclick="openModal('master',${d.id})">✏️</button><button class="delete-btn" onclick="deleteRow('master',${d.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
         function renderDruids(data) { const tbody = document.getElementById('druidsList'); if (!tbody) return; let html = ''; for (const d of data) html += `<tr><td>${d.id}</td><td>${escapeHtml(d.name)}</td><td>${d.level}</td><td><button class="edit-btn" onclick="openModal('druids',${d.id})">✏️</button><button class="delete-btn" onclick="deleteRow('druids',${d.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
-        function renderNews(data) { const tbody = document.getElementById('newsList'); if (!tbody) return; let html = ''; for (const d of data) html += `<tr><td>${d.id}</td><td>${escapeHtml(d.title)}</td><td>${d.date}</td><td><button class="edit-btn" onclick="openModal('news',${d.id})">✏️</button><button class="delete-btn" onclick="deleteRow('news',${d.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
+        async function renderNews() {
+            const news = await getNews();
+            const container = document.getElementById('newsContainer');
+            if(!container) return;
+            let html = '';
+            for(const n of news) {
+                html += `<div class="news-card">
+                            <div class="news-card-header">
+                                <div class="news-date-large">📅 ${new Date(n.date).toLocaleDateString('ru-RU')}</div>
+                            </div>
+                            <div class="news-card-body">
+                                <div class="news-title">${escapeHtml(n.title)}</div>
+                                <div class="news-content">${escapeHtml(n.content)}</div>
+                                ${n.footer ? `<div class="news-footer">${escapeHtml(n.footer)}</div>` : ''}
+                            </div>
+                        </div>`;
+            }
+            container.innerHTML = html;
+        }
         function renderUsers(data) { const tbody = document.getElementById('usersList'); if (!tbody) return; let html = ''; for (const d of data) html += `<tr><td>${d.id}</td><td>${escapeHtml(d.login)}</td><td>${escapeHtml(d.email || '-')}</td><td>${d.role}</td><td><button class="delete-btn" onclick="deleteUser(${d.id})">🗑️</button></td></tr>`; tbody.innerHTML = html; }
 
         async function deleteRow(type, id) { if (confirm('Удалить?')) { if (type === 'items') await deleteItemById(id); if (type === 'demons') await deleteDemonById(id); if (type === 'totems') await deleteTotemById(id); if (type === 'master') await deleteMasterRuneById(id); if (type === 'druids') await deleteDruidsRuneById(id); if (type === 'news') await deleteNewsById(id); loadTable(type); } }
