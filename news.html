@@ -20,7 +20,14 @@ async function renderNews() {
     if(!container) return;
     let html = '';
     for(const n of news) {
-        html += `<div class="news-card"><div class="news-card-header"><div class="news-date-large">📅 ${new Date(n.date).toLocaleDateString('ru-RU')}</div></div><div class="news-card-body"><div class="news-title">${escapeHtml(n.title)}</div><div class="news-content">${escapeHtml(n.content)}</div></div></div>`;
+        html += `<div class="news-card">
+                    <div class="news-card-header"><div class="news-date-large">📅 ${new Date(n.date).toLocaleDateString('ru-RU')}</div></div>
+                    <div class="news-card-body">
+                        <div class="news-title">${escapeHtml(n.title)}</div>
+                        <div class="news-content">${escapeHtml(n.content)}</div>
+                        ${n.footer ? `<div class="news-footer">${escapeHtml(n.footer)}</div>` : ''}
+                    </div>
+                </div>`;
     }
     container.innerHTML = html;
 }
