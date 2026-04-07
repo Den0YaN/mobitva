@@ -1,7 +1,7 @@
-if (typeof window.__dbClient === 'undefined') { 
-    const SUPABASE_URL = 'https://gmcqxgxwtczjlwyifwew.supabase.co'; 
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdtY3F4Z3h3dGN6amx3eWlmd2V3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MjIxMTAsImV4cCI6MjA5MDk5ODExMH0.cM6xm9qCRbl-c1h-pWOWKSeAozYUy7KpJjua79JgFuk'; 
-    window.__dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); 
+if (typeof window.__dbClient === 'undefined') {
+    const SUPABASE_URL = 'https://gmcqxgxwtczjlwyifwew.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdtY3F4Z3h3dGN6amx3eWlmd2V3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MjIxMTAsImV4cCI6MjA5MDk5ODExMH0.cM6xm9qCRbl-c1h-pWOWKSeAozYUy7KpJjua79JgFuk';
+    window.__dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 const db = window.__dbClient;
 
@@ -28,3 +28,10 @@ async function loginUser(login, password) { const { data, error } = await db.fro
 async function registerUser(login, password, email) { const { data: existing } = await db.from('users').select('*').eq('login', login); if (existing && existing.length > 0) return { success: false, message: '❌ Пользователь уже существует' }; const { count } = await db.from('users').select('*', { count: 'exact', head: true }); const role = count === 0 ? 'admin' : 'user'; const { error } = await db.from('users').insert([{ login, password, email, role, name: login }]); if (error) return { success: false, message: '❌ Ошибка регистрации' }; return { success: true, message: role === 'admin' ? '✅ Вы стали АДМИНИСТРАТОРОМ!' : '✅ Регистрация успешна!' }; }
 async function isFirstUser() { const { count, error } = await db.from('users').select('*', { count: 'exact', head: true }); if (error) return true; return count === 0; }
 async function initAuth() { const first = await isFirstUser(); if (first) { await registerUser('admin', 'admin123', 'admin@mmobitva.ru'); const users = await getUsers(); if (users && users.length > 0) { await db.from('users').update({ role: 'admin' }).eq('id', users[0].id); } } }
+// ========== ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ АДМИНКИ ==========
+async function getItemById(id) { const { data, error } = await db.from('items').select('*').eq('id', id); if(error) return null; return data ? data[0] : null; }
+async function getDemonById(id) { const { data, error } = await db.from('demons').select('*').eq('id', id); if(error) return null; return data ? data[0] : null; }
+async function getTotemById(id) { const { data, error } = await db.from('totems').select('*').eq('id', id); if(error) return null; return data ? data[0] : null; }
+async function getMasterRuneById(id) { const { data, error } = await db.from('runes_master').select('*').eq('id', id); if(error) return null; return data ? data[0] : null; }
+async function getDruidsRuneById(id) { const { data, error } = await db.from('runes_druids').select('*').eq('id', id); if(error) return null; return data ? data[0] : null; }
+async function getNewsById(id) { const { data, error } = await db.from('news').select('*').eq('id', id); if(error) return null; return data ? data[0] : null; }
