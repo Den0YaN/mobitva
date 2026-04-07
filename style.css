@@ -148,7 +148,7 @@ body{font-family:Tahoma,Arial;background:#0d0a07;color:#e8dcc0;font-size:13px;pa
 
 /* ===== ИКОНКИ ===== */
 .item-icon,.shop-icon,.stat-icon{background-repeat:no-repeat;display:inline-block;}
-.item-icon{width:32px;height:32px;background-image:url('img/icons.png');}
+.item-icon{width:28px;height:28px;background-image:url('img/icons.png');}
 .shop-icon{width:80px;height:80px;background-image:url('img/shop.png');background-position:calc(var(--col,0) * -80px) calc(var(--row,0) * -80px);}
 .stat-icon{width:28px;height:28px;background-image:url('img/icons.png');background-repeat:no-repeat;background-position:calc(var(--col,0) * -28px) calc(var(--row,0) * -28px);display:inline-block;vertical-align:middle;margin-right:6px;}
 .stat-icon-урон{--row:1;--col:4;}
@@ -158,6 +158,10 @@ body{font-family:Tahoma,Arial;background:#0d0a07;color:#e8dcc0;font-size:13px;pa
 .stat-icon-блок{--row:1;--col:3;}
 .stat-icon-оглушение{--row:1;--col:6;}
 .stat-icon-здоровье{--row:1;--col:10;}
+.stat-icon-износ{--row:2;--col:11;}
+.stat-icon-количество{--row:2;--col:11;}
+.stat-icon-годность{--row:2;--col:11;}
+.stat-icon-уровень{--row:1;--col:11;}
 
 /* ===== ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ АДМИНКИ ===== */
 .modal-content{width:700px!important;max-width:90%!important;max-height:85vh!important;}
