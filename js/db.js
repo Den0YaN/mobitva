@@ -35,3 +35,18 @@ async function getTotemById(id) { const { data, error } = await db.from('totems'
 async function getMasterRuneById(id) { const { data, error } = await db.from('runes_master').select('*').eq('id', id); if(error) return null; return data ? data[0] : null; }
 async function getDruidsRuneById(id) { const { data, error } = await db.from('runes_druids').select('*').eq('id', id); if(error) return null; return data ? data[0] : null; }
 async function getNewsById(id) { const { data, error } = await db.from('news').select('*').eq('id', id); if(error) return null; return data ? data[0] : null; }
+// ========== ФУНКЦИИ ДЛЯ КВЕСТОВЫХ РУН (nakolki) ==========
+async function getNakolki() { const { data, error } = await db.from('nakolki').select('*').order('sort_order'); if(error) return []; return data; }
+async function saveNakolki(item) { const { data, error } = await db.from('nakolki').upsert(item).select(); if(error) return null; return data; }
+async function deleteNakolkiById(id) { const { error } = await db.from('nakolki').delete().eq('id', id); return !error; }
+async function getNakolkiById(id) { const { data, error } = await db.from('nakolki').select('*').eq('id', id); if(error) return null; return data ? data[0] : null; }
+// ========== ЛИЧНЫЙ КАБИНЕТ (ПЕРСОНАЖИ И ТАЙМЕРЫ) ==========
+async function getUserCharacters(userId) { const { data, error } = await db.from('user_characters').select('*').eq('user_id', userId); if(error) return []; return data; }
+async function addCharacter(userId, name) { const { data, error } = await db.from('user_characters').insert([{ user_id: userId, name }]).select(); if(error) return null; return data[0]; }
+async function deleteCharacter(id) { const { error } = await db.from('user_characters').delete().eq('id', id); return !error; }
+
+async function getCharacterTimers(characterId) { const { data, error } = await db.from('user_timers').select('*').eq('character_id', characterId); if(error) return []; return data; }
+async function addTimer(characterId, questName, endTime, duration) { const { data, error } = await db.from('user_timers').insert([{ character_id: characterId, quest_name: questName, end_time: endTime, duration: duration }]).select(); if(error) return null; return data[0]; }
+async function updateTimer(id, questName, endTime, duration) { const { error } = await db.from('user_timers').update({ quest_name: questName, end_time: endTime, duration: duration }).eq('id', id); return !error; }
+async function deleteTimer(id) { const { error } = await db.from('user_timers').delete().eq('id', id); return !error; }
+async function toggleTimerActive(id, isActive) { const { error } = await db.from('user_timers').update({ is_active: isActive }).eq('id', id); return !error; }

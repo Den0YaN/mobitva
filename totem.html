@@ -148,7 +148,7 @@ function openTotemModal(id) {
     iconEl.style.backgroundPosition = `-${t.icon_col * 80}px -${t.icon_row * 80}px`;
 
     document.getElementById('modalTitle').innerText = t.name;
-    document.getElementById('modalSubtitle').innerText = `📊 Уровень ${t.level} | ⭐ Требуется ${t.required_level}+`;
+    document.getElementById('modalSubtitle').innerText = `⭐ Уровень ${t.level} | ⭐ Требуется ${t.required_level}+`;
     document.getElementById('modalDescription').innerText = t.description;
 
     const statsContainer = document.getElementById('modalStats');

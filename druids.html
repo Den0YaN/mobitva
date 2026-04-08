@@ -123,7 +123,7 @@ async function renderDruids() {
 
         const levelEl = document.createElement('div');
         levelEl.className = 'rune-level';
-        levelEl.textContent = `📊 Уровень ${r.level}`;
+        levelEl.textContent = `⭐ Уровень ${r.level}`;
 
         title.append(nameEl, levelEl);
         header.append(icon, title);
@@ -152,7 +152,7 @@ function openRuneModal(id) {
     iconEl.style.backgroundPosition = `-${r.icon_col * 80}px -${r.icon_row * 80}px`;
 
     document.getElementById('modalTitle').innerText = r.name;
-    document.getElementById('modalSubtitle').innerText = `📊 Уровень ${r.level}`;
+    document.getElementById('modalSubtitle').innerText = `⭐ Уровень ${r.level}`;
     document.getElementById('modalDescription').innerText = r.description;
 
     const statsContainer = document.getElementById('modalStats');

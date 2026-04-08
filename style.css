@@ -13,19 +13,113 @@ body{font-family:Tahoma,Arial;background:#0d0a07;color:#e8dcc0;font-size:13px;pa
 .cat-btn{padding:10px 16px;background:#2a2420;border:2px solid #c7ba00;border-radius:10px;color:#e8dcc0;font-weight:bold;cursor:pointer;transition:0.2s;}
 .cat-btn:hover{background:#3a342a;border-color:#ff4444;color:#ff4444;transform:translateY(-2px);}
 
-/* ===== ТАБЛИЦА ПРЕДМЕТОВ ===== */
-.table{width:100%;margin-bottom:25px;}
-.table th{display:none;}
-.table tbody{display:grid;grid-template-columns:repeat(6,1fr);gap:15px;}
-.table tr[data-name]{display:flex;flex-direction:column;background:linear-gradient(145deg,#2a2620,#1a1612);border:1px solid #3a342a;border-radius:14px;padding:15px 8px 12px;transition:0.25s;cursor:pointer;}
-.table tr[data-name]:hover{border-color:#c7ba00;transform:translateY(-5px);box-shadow:0 12px 28px rgba(199,186,0,0.3);}
-.table td{display:block;padding:4px 0;text-align:center;}
-.item-cell{display:flex;flex-direction:column;align-items:center;gap:10px;}
-.style-cell{font-size:10px;padding:4px 12px;border-radius:25px;display:inline-block;font-weight:bold;}
+/* ==================== MAIN.HTML - КОМПАКТНЫЕ КАРТОЧКИ ПРЕДМЕТОВ ==================== */
+.items-table{width:100%;margin-bottom:25px;}
+.items-table tbody{display:grid;grid-template-columns:repeat(auto-fill,minmax(125px,1fr));gap:12px;}
+.items-table tr{display:flex;flex-direction:column;background:linear-gradient(145deg,#2a2620,#1a1612);border:1px solid #3a342a;border-radius:12px;padding:10px;transition:all 0.25s ease;cursor:pointer;}
+.items-table tr:hover{transform:translateY(-3px);border-color:#c7ba00;box-shadow:0 6px 16px rgba(199,186,0,0.25);}
+.items-table td{display:block;padding:2px 0;text-align:center;}
+.item-cell{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;}
+.item-cell .shop-icon{width:80px;height:80px;margin:0 auto;border-radius:8px;border:1px solid #4a3f32;}
+.item-cell span{font-size:13px;font-weight:bold;color:#e8dcc0;margin-top:2px;}
+.style-cell{ font-size:13px;padding:6px 20px;border-radius:30px;display:inline-block;font-weight:bold;min-width:80px;margin:5px auto;text-align:center;}
 .style-cell.rare{background:rgba(76,175,80,0.3);color:#9edf9e;border:1px solid rgba(76,175,80,0.5);}
 .style-cell.uncommon{background:rgba(33,150,243,0.3);color:#9ec8f0;border:1px solid rgba(33,150,243,0.5);}
 .style-cell.armor{background:rgba(244,67,54,0.3);color:#f0a090;border:1px solid rgba(244,67,54,0.5);}
 .style-cell.epic{background:rgba(255,235,59,0.3);color:#f0e8a0;border:1px solid rgba(255,235,59,0.5);}
+.item-type{color:#c7ba00;font-size:10px;margin:1px 0;}
+.item-level{color:#ffaa44;font-size:11px;font-weight:bold;margin:1px 0;}
+
+/* ==================== МОДАЛКА ПРЕДМЕТА СРАВНЕНИЕ ==================== */
+.item-compare-modal{display:none;position:fixed;z-index:10000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.95);justify-content:center;align-items:center;backdrop-filter:blur(5px);}
+.item-compare-container{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;max-width:95%;max-height:90vh;overflow-y:auto;padding:20px;}
+.item-card-modal{background:linear-gradient(145deg,#1e1a14,#0a0806);border:2px solid #c7ba00;border-radius:24px;width:380px;max-width:100%;animation:modalFadeIn 0.3s ease;box-shadow:0 0 40px rgba(199,186,0,0.3);position:relative;}
+.item-card-modal.compared{width:380px;border-color:#44ff88;box-shadow:0 0 40px rgba(68,255,136,0.3);}
+.item-card-header{background:linear-gradient(135deg,#2a2420,#1a1612);padding:15px;border-radius:22px 22px 0 0;border-bottom:2px solid #c7ba00;text-align:center;position:relative;}
+.item-card-close{position:absolute;top:10px;right:15px;font-size:26px;cursor:pointer;color:#c7ba00;transition:0.2s;}
+.item-card-close:hover{color:#ff4444;transform:scale(1.1);}
+.item-card-icon{display:flex;justify-content:center;margin-bottom:10px;}
+.item-card-icon .shop-icon{width:80px;height:80px;border:2px solid #c7ba00;border-radius:16px;background-color:#0d0a07;}
+.item-card-title{font-size:20px;font-weight:bold;color:#d4b35a;margin-bottom:5px;}
+.item-card-subtitle{font-size:12px;color:#c7ba00;margin-bottom:5px;}
+.item-card-level{font-size:11px;color:#ffaa44;}
+.item-card-body{padding:15px;}
+.item-card-stats{background:#0d0a07;border-radius:14px;padding:10px;margin-bottom:12px;border:1px solid #3a342a;}
+.item-card-stats-title{font-size:11px;color:#c7ba00;margin-bottom:8px;text-align:center;letter-spacing:1px;}
+.item-card-stat-line{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px dashed #2a2420;font-size:12px;}
+.item-card-stat-line:last-child{border-bottom:none;}
+.item-card-stat-name{color:#e8dcc0;display:flex;align-items:center;gap:6px;}
+.item-card-stat-value{color:#c7ba00;font-weight:bold;}
+.item-card-unique{background:rgba(199,186,0,0.1);border-radius:10px;padding:8px;margin-bottom:12px;border-left:3px solid #c7ba00;}
+.item-card-unique-title{font-size:10px;color:#c7ba00;margin-bottom:5px;text-transform:uppercase;}
+.item-card-unique-list{margin:0;padding-left:15px;color:#e8dcc0;font-size:11px;}
+.item-card-unique-list li{margin:3px 0;}
+.item-card-description{background:rgba(0,0,0,0.3);border-radius:10px;padding:10px;text-align:center;font-size:11px;color:#a0a0a0;border:1px solid #3a342a;}
+.item-card-footer{padding:10px 15px 15px;text-align:center;}
+.compare-btn{background:#2a2420;border:2px solid #44aaff;border-radius:40px;padding:8px 20px;color:#44aaff;cursor:pointer;transition:0.2s;font-weight:bold;font-size:12px;margin:0 5px;}
+.compare-btn:hover{background:#44aaff;color:#0d0a07;transform:scale(1.02);box-shadow:0 0 15px rgba(68,170,255,0.5);}
+.close-modal-btn{background:#2a2420;border:2px solid #c7ba00;border-radius:40px;padding:8px 20px;color:#c7ba00;cursor:pointer;transition:0.2s;font-weight:bold;font-size:12px;margin:0 5px;}
+.close-modal-btn:hover{background:#c7ba00;color:#0d0a07;}
+.select-item-list{max-height:300px;overflow-y:auto;margin-top:10px;}
+.select-item-option{padding:8px 12px;cursor:pointer;transition:0.2s;border-bottom:1px solid #3a342a;display:flex;align-items:center;gap:10px;}
+.select-item-option:hover{background:#2a2420;color:#ffaa44;}
+.select-item-option .shop-icon{width:32px;height:32px;}
+.compare-selector{background:#0d0a07;border-radius:12px;padding:10px;margin-top:10px;}
+@keyframes modalFadeIn{from{opacity:0;transform:scale(0.95);}to{opacity:1;transform:scale(1);}}
+
+/* ==================== МОДАЛКА ВЫБОРА ПРЕДМЕТА ДЛЯ СРАВНЕНИЯ ==================== */
+.select-item-modal{display:none;position:fixed;z-index:10001;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.95);justify-content:center;align-items:center;backdrop-filter:blur(5px);}
+.select-item-content{background:linear-gradient(145deg,#1e1a14,#0a0806);border:2px solid #c7ba00;border-radius:24px;width:400px;max-width:90%;max-height:80vh;display:flex;flex-direction:column;animation:modalFadeIn 0.3s ease;}
+.select-item-header{display:flex;justify-content:space-between;align-items:center;padding:15px;border-bottom:1px solid #c7ba00;background:linear-gradient(135deg,#2a2420,#1a1612);border-radius:22px 22px 0 0;}
+.select-item-header h3{color:#d4b35a;margin:0;font-size:18px;}
+.select-item-close{background:none;border:none;color:#c7ba00;font-size:24px;cursor:pointer;transition:0.2s;}
+.select-item-close:hover{color:#ff4444;transform:scale(1.1);}
+.select-item-content input{margin:15px;padding:10px;background:#0d0a07;border:1px solid #c7ba00;border-radius:10px;color:#e8dcc0;font-size:13px;}
+.select-item-list{flex:1;overflow-y:auto;padding:0 10px 10px 10px;}
+.select-item-option{display:flex;align-items:center;gap:12px;padding:10px;cursor:pointer;transition:0.2s;border-bottom:1px solid #3a342a;}
+.select-item-option:hover{background:#2a2420;transform:translateX(5px);}
+.select-item-option .shop-icon{width:80px;height:80px;border-radius:8px;border:1px solid #4a3f32;}
+.select-item-info{flex:1;}
+.select-item-name{font-size:14px;font-weight:bold;color:#e8dcc0;}
+.select-item-type{font-size:11px;color:#c7ba00;}
+.select-item-empty{text-align:center;padding:30px;color:#a0a0a0;}
+.item-card-remove{position:absolute;top:10px;right:45px;font-size:18px;cursor:pointer;color:#ff4444;transition:0.2s;background:none;border:none;}
+.item-card-remove:hover{color:#ff8888;transform:scale(1.1);}
+
+/* ===== ПАНЕЛЬ ПОИСКА И ФИЛЬТРОВ ===== */
+.sort-panel{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px;background:#1a1612;border-radius:12px;border:1px solid #c7ba00;margin-bottom:20px;}
+.sort-panel input{background:#0d0a07;color:#e8dcc0;border:1px solid #c7ba00;border-radius:8px;padding:8px 12px;flex:1;min-width:150px;font-size:12px;}
+.sort-panel input:focus{border-color:#ffaa44;outline:none;box-shadow:0 0 6px rgba(255,170,68,0.3);}
+.sort-controls{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.sort-label{font-weight:bold;color:#d4b35a;font-size:11px;}
+.sort-btn{background:#0d0a07;border:1px solid #c7ba00;color:#e8dcc0;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:11px;transition:0.2s;}
+.sort-btn:hover{background:#2a2420;border-color:#ffaa44;color:#ffaa44;}
+
+/* ===== ВЫПАДАЮЩИЕ МЕНЮ ===== */
+.dropdown{position:relative;display:inline-block;}
+.dropdown-btn{cursor:pointer;}
+.dropdown-content{display:none;position:absolute;top:100%;left:0;background:#1a1612;min-width:150px;border:1px solid #c7ba00;border-radius:8px;z-index:100;margin-top:4px;box-shadow:0 6px 16px rgba(0,0,0,0.5);}
+.dropdown-content.show{display:block;animation:fadeIn 0.2s;}
+.dropdown-header{padding:6px 10px;color:#d4b35a;border-bottom:1px solid #c7ba00;font-weight:bold;font-size:10px;}
+.dropdown-option{padding:6px 10px;cursor:pointer;transition:0.2s;color:#e8dcc0;font-size:11px;}
+.dropdown-option:hover{background:#0d0a07;padding-left:16px;color:#ffaa44;}
+
+/* ===== ФИЛЬТР БАР ===== */
+.filter-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:0 5px;flex-wrap:wrap;gap:10px;}
+.result-count{font-size:11px;color:#c7ba00;background:rgba(0,0,0,0.5);padding:4px 12px;border-radius:16px;display:inline-block;}
+.reset-btn{background:#2a2420;border:1px solid #ff4444;border-radius:25px;padding:4px 12px;color:#ff8888;cursor:pointer;font-size:10px;transition:0.2s;font-weight:bold;}
+.reset-btn:hover{background:#ff4444;color:#0d0a07;transform:scale(1.02);box-shadow:0 0 8px rgba(255,68,68,0.4);}
+
+/* ===== СООБЩЕНИЕ ПРИ ПУСТОМ РЕЗУЛЬТАТЕ ===== */
+.no-items{text-align:center;padding:30px;color:#a0a0a0;font-size:13px;grid-column:1/-1;}
+
+/* ===== АНИМАЦИИ ===== */
+@keyframes fadeIn{from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:translateY(0);}}
+
+/* ===== АДАПТАЦИЯ ===== */
+@media (max-width:700px){.items-table tbody{grid-template-columns:repeat(3,1fr);}}
+@media (max-width:550px){.items-table tbody{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:400px){.items-table tbody{grid-template-columns:1fr;}.sort-panel{flex-direction:column;align-items:stretch;}}
 
 /* ===== ПАНЕЛЬ ПОИСКА ===== */
 .sort-panel{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:15px;background:#1a1612;border-radius:12px;border:1px solid #c7ba00;margin-bottom:25px;}
@@ -102,10 +196,20 @@ body{font-family:Tahoma,Arial;background:#0d0a07;color:#e8dcc0;font-size:13px;pa
 .news-card-header{background:linear-gradient(135deg,#2a2420,#1a1612);padding:15px 20px;border-bottom:1px solid #c7ba00;display:flex;justify-content:space-between;align-items:center;}
 .news-date-large{font-size:14px;font-weight:bold;color:#c7ba00;}
 .news-card-body{padding:20px;}
-.news-title{font-size:18px;font-weight:bold;color:#d4b35a;margin-bottom:15px;}
-.news-content{color:#e8dcc0;line-height:1.5;}
-.news-footer {margin-top: 12px; padding-top: 10px;border-top: 1px solid #c7ba00;font-size: 12px;color: #c7ba00;text-align: right;font-style: italic;}
-    
+.news-title{font-size:18px;font-weight:bold;color:#d4b35a;margin-bottom:15px;text-align: center;}
+.news-content{color:#e8dcc0;line-height:1.5;text-align: center;white-space: pre-wrap;}
+.news-footer {margin-top: 12px; padding-top: 10px;border-top: 1px solid #c7ba00;font-size: 12px;color: #c7ba00;text-align: center;}
+ /* ==== НОВОСТИ В INDEX ==== */   
+.latest-news-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:15px;}
+.latest-news-card{background:#1a1612;border:1px solid #c7ba00;border-radius:12px;padding:15px;margin-bottom:15px;transition:0.3s;}
+.latest-news-card:first-child{margin-top:15px;}
+.latest-news-card:last-child{margin-bottom:0;}
+.latest-news-card:hover{transform:translateY(-3px);border-color:#c7ba00;box-shadow:0 0 15px rgba(199,186,0,0.2);}
+.latest-news-date{font-size:11px;color:#c7ba00;margin-bottom:8px;}
+.latest-news-title{font-size:18px;font-weight:bold;color:#d4b35a;margin-bottom:10px;}
+.latest-news-content{font-size:15px;color:#a0a0a0;line-height:1.4;margin-bottom:10px;white-space:pre-wrap;word-break:break-word;}
+.latest-news-footer{font-size:12px;color:#c7ba00;margin-top:8px;padding-top:8px;border-top:1px solid #c7ba00;text-align:center;}
+
 /* ===== КОНТАКТЫ ===== */
 .contacts-container{max-width:600px;margin:0 auto;}
 .contacts-card{background:#1a1612;border:1px solid #c7ba00;border-radius:16px;overflow:hidden;margin-bottom:20px;}
@@ -183,8 +287,159 @@ body{font-family:Tahoma,Arial;background:#0d0a07;color:#e8dcc0;font-size:13px;pa
 .icon-cell-admin{width:48px;height:48px;background-image:url('img/shop.png');background-repeat:no-repeat;background-size:auto 48px;cursor:pointer;border:1px solid #5a4a38;border-radius:6px;}
 .icon-cell-admin:hover{border-color:#ffaa44;transform:scale(1.02);}
 
+/* ==================== ПОЛНЫЙ ЕБАНЫЙ ДИЗАЙН PROFILE - ИСПРАВЛЕННАЯ ВЕРСИЯ ==================== */
+
+/* --- КОНТЕЙНЕР ПРОФИЛЯ --- */
+.profile-container{max-width:900px;margin:0 auto;padding:10px;}
+
+/* --- КАРТОЧКА ПЕРСОНАЖА --- */
+.character-card{background:radial-gradient(circle at 0% 0%,#1e1a14,#0a0806);border-radius:24px;padding:20px;margin-bottom:25px;transition:0.3s;box-shadow:0 10px 30px rgba(0,0,0,0.5);position:relative;overflow:hidden;border:1px solid rgba(199,186,0,0.3);}
+.character-card::before{content:"";position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(45deg,transparent,rgba(199,186,0,0.05),transparent);pointer-events:none;}
+.character-card:nth-child(odd){border-left:4px solid #ffaa44;box-shadow:0 10px 30px rgba(255,170,68,0.2);}
+.character-card:nth-child(even){border-left:4px solid #44ff88;box-shadow:0 10px 30px rgba(68,255,136,0.2);}
+.character-card:nth-child(3n){border-left:4px solid #ff44aa;box-shadow:0 10px 30px rgba(255,68,170,0.2);}
+.character-card:nth-child(4n){border-left:4px solid #44aaff;box-shadow:0 10px 30px rgba(68,170,255,0.2);}
+.character-card:hover{transform:translateY(-5px);border-color:#c7ba00;box-shadow:0 15px 40px rgba(199,186,0,0.3);}
+
+/* --- ШАПКА ПЕРСОНАЖА --- */
+.character-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;padding-bottom:12px;border-bottom:1px solid rgba(199,186,0,0.3);gap:10px;}
+.character-name{font-size:24px;font-weight:bold;background:linear-gradient(135deg,#ffdd88,#ffaa44,#ffdd88);-webkit-background-clip:text;background-clip:text;color:transparent;display:flex;align-items:center;gap:10px;text-shadow:none;flex:1;justify-content:center;}
+.character-name::before{content:"🎮";font-size:22px;color:#ffaa44;}
+.delete-char-btn{background:linear-gradient(135deg,#ff4444,#aa0000);border:none;border-radius:30px;padding:8px 20px;color:white;cursor:pointer;transition:0.2s;font-weight:bold;font-size:12px;box-shadow:0 2px 10px rgba(255,68,68,0.4);}
+.delete-char-btn:hover{background:linear-gradient(135deg,#ff6666,#ff0000);transform:scale(1.05);box-shadow:0 0 20px rgba(255,68,68,0.8);}
+.refresh-all-btn{background:linear-gradient(135deg,#1a1612,#0f0d0a);border:2px solid #44aaff;border-radius:30px;padding:8px 16px;color:#44aaff;font-weight:bold;font-size:12px;cursor:pointer;transition:0.3s;box-shadow:0 0 8px rgba(68,170,255,0.3);white-space:nowrap;}
+.refresh-all-btn:hover{background:#44aaff;color:#0d0a07;transform:scale(1.02);box-shadow:0 0 15px rgba(68,170,255,0.6);}
+
+/* ==================== ТАЙМЕРЫ ==================== */
+.timer-list{display:flex;flex-direction:column;gap:8px;}
+
+/* --- КНОПКА ОБНОВИТЬ ВСЕ ТАЙМЕРЫ --- */
+.refresh-all-btn{background:linear-gradient(135deg,#1a1612,#0f0d0a);border:2px solid #44aaff;border-radius:30px;padding:6px 16px;color:#44aaff;font-weight:bold;font-size:12px;cursor:pointer;transition:0.3s;box-shadow:0 0 8px rgba(68,170,255,0.3);margin-right:15px;}
+.refresh-all-btn:hover{background:#44aaff;color:#0d0a07;transform:scale(1.02);box-shadow:0 0 15px rgba(68,170,255,0.6);}
+
+/* --- БАЗОВЫЙ СТИЛЬ ТАЙМЕРА --- */
+.timer-item{background:linear-gradient(95deg,#1a1612,#0f0d0a);border-radius:16px;padding:8px 12px;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);cursor:pointer;border:1px solid rgba(199,186,0,0.2);position:relative;overflow:hidden;min-height:52px;}
+.timer-item:hover{transform:scale(1.01);border-color:#c7ba00;box-shadow:0 4px 15px rgba(199,186,0,0.3);cursor:pointer;}
+.timer-item::after{position:absolute;right:8px;top:50%;transform:translateY(-50%);opacity:0;transition:0.3s;font-size:12px;color:#c7ba00;}
+.timer-item:hover::after{opacity:0.6;right:12px;}
+
+/* --- КОМПАКТНОЕ СОСТОЯНИЕ - ТОЛЬКО НАЗВАНИЕ И СТАТУС --- */
+.timer-item .timer-info{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:nowrap;height:100%;min-height:36px;}
+.timer-item .timer-name-row{display:flex;align-items:center;gap:8px;flex:1;justify-content:flex-start;}
+.timer-item .timer-name{font-size:14px;font-weight:bold;padding:4px 12px;border-radius:30px;background:rgba(199,186,0,0.15);color:#ffdd88;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px;line-height:1.4;}
+.timer-item .timer-time-row{display:none;}
+.timer-item .timer-status{font-size:10px;padding:4px 14px;border-radius:30px;white-space:nowrap;margin-left:auto;display:inline-flex;align-items:center;justify-content:center;line-height:1.4;}
+.timer-item .timer-actions{display:none;}
+.timer-item .timer-progress{display:none;}
+
+/* --- РАЗВЕРНУТОЕ СОСТОЯНИЕ - ВСЕ ЭЛЕМЕНТЫ --- */
+.timer-item.expanded{min-height:200px;padding:15px;border-radius:20px;border-width:2px;}
+.timer-item.expanded .timer-info{flex-direction:column;align-items:stretch;gap:10px;}
+.timer-item.expanded .timer-name-row{justify-content:center;}
+.timer-item.expanded .timer-name{font-size:18px;max-width:none;white-space:normal;text-align:center;padding:8px 15px;background:rgba(199,186,0,0.25);color:#ffeeaa;}
+.timer-item.expanded .timer-time-row{display:flex;align-items:center;justify-content:center;gap:15px;margin-top:5px;}
+.timer-item.expanded .timer-time{font-family:'Courier New',monospace;font-size:28px;font-weight:bold;background:#0d0a07;padding:10px 20px;border-radius:40px;color:#ffaa44;border:1px solid rgba(255,170,68,0.3);text-align:center;}
+.timer-item.expanded .timer-status{font-size:13px;padding:6px 20px;margin:0;}
+.timer-item.expanded .timer-actions{display:flex;margin-top:15px;padding-top:12px;border-top:1px solid rgba(199,186,0,0.3);justify-content:center;gap:12px;position:relative;z-index:3;}
+.timer-item.expanded .timer-progress{display:block;margin-top:12px;height:8px;background:#2a2420;border-radius:10px;overflow:hidden;}
+.timer-item.expanded .timer-progress-bar{height:100%;width:0%;transition:width 0.5s linear;border-radius:10px;}
+.timer-item.expanded::after{display:none;}
+
+/* --- РАЗНОЦВЕТНЫЕ ТАЙМЕРЫ --- */
+.timer-item:nth-child(1){border-left:3px solid #c7ba00;}
+.timer-item:nth-child(1) .timer-progress-bar{background:linear-gradient(90deg,#c7ba00,#ffee88);}
+.timer-item:nth-child(1).expanded{background:linear-gradient(135deg,#1a1612,#1a1408);border-left-color:#ffee88;box-shadow:0 8px 25px rgba(199,186,0,0.4);}
+.timer-item:nth-child(1).expanded .timer-time{color:#ffee88;text-shadow:0 0 8px rgba(199,186,0,0.6);}
+
+.timer-item:nth-child(2){border-left:3px solid #ff44aa;}
+.timer-item:nth-child(2) .timer-progress-bar{background:linear-gradient(90deg,#ff44aa,#ff88cc);}
+.timer-item:nth-child(2).expanded{background:linear-gradient(135deg,#1a1612,#1a0a15);border-left-color:#ff88cc;box-shadow:0 8px 25px rgba(255,68,170,0.4);}
+.timer-item:nth-child(2).expanded .timer-time{color:#ff88cc;text-shadow:0 0 8px rgba(255,68,170,0.6);}
+
+.timer-item:nth-child(3){border-left:3px solid #44ff88;}
+.timer-item:nth-child(3) .timer-progress-bar{background:linear-gradient(90deg,#44ff88,#88ffaa);}
+.timer-item:nth-child(3).expanded{background:linear-gradient(135deg,#1a1612,#0a1a0f);border-left-color:#88ffaa;box-shadow:0 8px 25px rgba(68,255,136,0.4);}
+.timer-item:nth-child(3).expanded .timer-time{color:#88ffaa;text-shadow:0 0 8px rgba(68,255,136,0.6);}
+
+.timer-item:nth-child(4){border-left:3px solid #44aaff;}
+.timer-item:nth-child(4) .timer-progress-bar{background:linear-gradient(90deg,#44aaff,#88ccff);}
+.timer-item:nth-child(4).expanded{background:linear-gradient(135deg,#1a1612,#0a121a);border-left-color:#88ccff;box-shadow:0 8px 25px rgba(68,170,255,0.4);}
+.timer-item:nth-child(4).expanded .timer-time{color:#88ccff;text-shadow:0 0 8px rgba(68,170,255,0.6);}
+
+.timer-item:nth-child(5){border-left:3px solid #ffaa44;}
+.timer-item:nth-child(5) .timer-progress-bar{background:linear-gradient(90deg,#ffaa44,#ffcc88);}
+.timer-item:nth-child(5).expanded{background:linear-gradient(135deg,#1a1612,#1a0f08);border-left-color:#ffcc88;box-shadow:0 8px 25px rgba(255,170,68,0.4);}
+.timer-item:nth-child(5).expanded .timer-time{color:#ffcc88;text-shadow:0 0 8px rgba(255,170,68,0.6);}
+
+/* --- ОБЩИЕ СТИЛИ ДЛЯ РАЗВЕРНУТЫХ --- */
+.timer-item.expanded .timer-name{background:rgba(199,186,0,0.25);color:#ffeeaa;border-radius:30px;}
+
+/* --- СТАТУС --- */
+.timer-status.active{background:linear-gradient(135deg,#2c7a2c,#1e5a1e);color:#fff;box-shadow:0 0 8px #2c7a2c;animation:pulse 1.5s infinite;}
+.timer-status.inactive{background:linear-gradient(135deg,#7a2c2c,#5a1e1e);color:#ffaaaa;}
+
+/* --- КНОПКИ ДЕЙСТВИЙ ТАЙМЕРА --- */
+.timer-actions{display:flex;gap:10px;justify-content:center;}
+.timer-btn{background:rgba(0,0,0,0.7);border:1px solid;border-radius:30px;padding:6px 16px;cursor:pointer;font-size:11px;transition:0.2s;font-weight:bold;position:relative;z-index:3;}
+.timer-btn:hover{transform:scale(1.05);}
+.timer-item:nth-child(1) .timer-btn{border-color:#c7ba00;color:#c7ba00;}
+.timer-item:nth-child(1) .timer-btn:hover{background:#c7ba00;color:#0d0a07;box-shadow:0 0 10px #c7ba00;}
+.timer-item:nth-child(2) .timer-btn{border-color:#ff44aa;color:#ff44aa;}
+.timer-item:nth-child(2) .timer-btn:hover{background:#ff44aa;color:#0d0a07;box-shadow:0 0 10px #ff44aa;}
+.timer-item:nth-child(3) .timer-btn{border-color:#44ff88;color:#44ff88;}
+.timer-item:nth-child(3) .timer-btn:hover{background:#44ff88;color:#0d0a07;box-shadow:0 0 10px #44ff88;}
+.timer-item:nth-child(4) .timer-btn{border-color:#44aaff;color:#44aaff;}
+.timer-item:nth-child(4) .timer-btn:hover{background:#44aaff;color:#0d0a07;box-shadow:0 0 10px #44aaff;}
+.timer-item:nth-child(5) .timer-btn{border-color:#ffaa44;color:#ffaa44;}
+.timer-item:nth-child(5) .timer-btn:hover{background:#ffaa44;color:#0d0a07;box-shadow:0 0 10px #ffaa44;}
+
+/* ==================== НЕОНОВЫЕ КНОПКИ PROFILE ==================== */
+.add-timer-btn{background:linear-gradient(135deg,#1a1612,#0f0d0a);border:2px solid #44ff88;border-radius:60px;padding:12px 20px;margin-top:15px;width:100%;color:#44ff88;font-weight:bold;font-size:14px;cursor:pointer;transition:0.3s;text-align:center;box-shadow:0 0 8px rgba(68,255,136,0.3);}
+.add-timer-btn:hover{background:#44ff88;color:#0d0a07;transform:translateY(-2px);box-shadow:0 0 20px rgba(68,255,136,0.6);}
+
+.add-character-btn{background:linear-gradient(135deg,#1a1612,#0f0d0a);border:2px solid #ff44aa;border-radius:60px;padding:14px 24px;margin-top:20px;width:100%;color:#ff44aa;font-weight:bold;font-size:16px;cursor:pointer;transition:0.3s;text-align:center;box-shadow:0 0 8px rgba(255,68,170,0.3);}
+.add-character-btn:hover{background:#ff44aa;color:#0d0a07;transform:translateY(-3px);box-shadow:0 0 25px rgba(255,68,170,0.6);}
+
+/* ==================== МОДАЛКИ С ОБВОДКАМИ ==================== */
+.modal{display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.95);justify-content:center;align-items:center;backdrop-filter:blur(8px);}
+
+/* --- МОДАЛКА ПЕРСОНАЖА - ИСПРАВЛЕННАЯ --- */
+.add-char-modal{background:radial-gradient(circle at 30% 20%,#1e1a14,#0a0806);border:2px solid #ff44aa;border-radius:40px;padding:25px 30px;width:360px;max-width:90%;text-align:center;box-shadow:0 0 60px rgba(199,186,0,0.3);animation:modalFadeIn 0.3s ease;position:relative;}
+.add-char-modal h2{background:linear-gradient(135deg,#ffdd88,#ffaa44);-webkit-background-clip:text;text-align:center;background-clip:text;color:transparent;margin-bottom:20px;font-size:24px;}
+.add-char-modal input{width:100%;padding:12px;background:#0d0a07;border:2px solid rgba(199,186,0,0.5);border-radius:40px;color:#e8dcc0;font-size:14px;margin-bottom:20px;text-align:center;transition:0.2s;}
+.add-char-modal input:focus{outline:none;border-color:#ffaa44;box-shadow:0 0 20px rgba(255,170,68,0.5);}
+
+/* --- МОДАЛКА ТАЙМЕРА - ИСПРАВЛЕННАЯ --- */
+.timer-modal-content{background:radial-gradient(circle at 70% 20%,#1e1a14,#0a0806);text-align:center;border:2px solid #44ff88;border-radius:40px;padding:25px 30px;width:450px;max-width:90%;box-shadow:0 0 60px rgba(68,255,136,0.3);animation:modalFadeIn 0.3s ease;}
+.timer-modal-content h2{background:linear-gradient(135deg,#88ffaa,#44ff88);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:20px;font-size:22px;text-align:center;}
+
+/* --- ПОЛЯ ВРЕМЕНИ --- */
+.time-input-group{display:flex;gap:12px;margin:15px 0;}
+.time-field{flex:1;text-align:center;}
+.time-field label{display:block;font-size:10px;color:#c7ba00;margin-bottom:5px;text-transform:uppercase;}
+.time-field input{width:100%;padding:10px;background:#0d0a07;border:2px solid rgba(199,186,0,0.5);border-radius:40px;color:#e8dcc0;text-align:center;font-size:18px;font-weight:bold;}
+.time-field input:focus{outline:none;border-color:#44ff88;box-shadow:0 0 15px rgba(68,255,136,0.5);}
+
+/* --- ФОРМА --- */
+.form-group{margin-bottom:18px;}
+.form-group label{display:block;margin-bottom:6px;color:#ffaa44;font-weight:bold;font-size:12px;text-transform:uppercase;}
+.form-group input{width:100%;padding:10px;background:#0d0a07;border:2px solid rgba(199,186,0,0.5);border-radius:40px;color:#e8dcc0;font-size:13px;}
+.form-group input:focus{outline:none;border-color:#44ff88;box-shadow:0 0 15px rgba(68,255,136,0.5);}
+
+/* --- КНОПКИ МОДАЛОК --- */
+.modal-buttons{display:flex;gap:12px;justify-content:center;margin-top:20px;}
+.modal-save-btn{background:linear-gradient(135deg,#1a1612,#0f0d0a);border:2px solid #44ff88;border-radius:40px;padding:10px 20px;color:#44ff88;font-weight:bold;cursor:pointer;transition:0.3s;min-width:120px;}
+.modal-save-btn:hover{background:#44ff88;color:#0d0a07;box-shadow:0 0 15px rgba(68,255,136,0.5);transform:scale(1.02);}
+.modal-cancel-btn{background:linear-gradient(135deg,#1a1612,#0f0d0a);border:2px solid #ff4444;border-radius:40px;padding:10px 20px;color:#ff8888;font-weight:bold;cursor:pointer;transition:0.3s;min-width:120px;}
+.modal-cancel-btn:hover{background:#ff4444;color:#0d0a07;box-shadow:0 0 15px rgba(255,68,68,0.5);transform:scale(1.02);}
+
+/* ==================== АНИМАЦИИ ==================== */
+@keyframes modalFadeIn{from{opacity:0;transform:scale(0.85);}to{opacity:1;transform:scale(1);}}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 8px #2c7a2c;}50%{opacity:0.85;box-shadow:0 0 20px #2c7a2c;}}
+
 /* ===== АДАПТАЦИЯ ===== */
 @media (max-width:900px){.table tbody{grid-template-columns:repeat(4,1fr);}}
 @media (max-width:700px){.wrapper{width:95%;padding:15px;}.sort-controls{width:100%;justify-content:flex-start;margin-left:0;}}
 @media (max-width:600px){.table tbody{grid-template-columns:repeat(3,1fr);}.circles-grid,.runes-grid,.totems-grid{grid-template-columns:repeat(2,1fr);}}
 @media (max-width:450px){.table tbody{grid-template-columns:repeat(2,1fr);}.circles-grid,.runes-grid,.totems-grid{grid-template-columns:1fr;}}
+@media (max-width:700px){.latest-news-grid{grid-template-columns:1fr;}}
